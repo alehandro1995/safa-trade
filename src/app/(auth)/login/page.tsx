@@ -2,6 +2,7 @@ import { FaTelegramPlane } from "react-icons/fa";
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import Link from "next/link"
 import {
   Card,
   CardAction,
@@ -20,7 +21,9 @@ function Page() {
 					<CardTitle>Войти</CardTitle>
 					<CardDescription>Пожалуйста, войдите в аккаунт, чтобы продолжить.</CardDescription>
 					<CardAction className="cursor-pointer opacity-90 hover:opacity-100 transition-opacity">
-						<FaTelegramPlane />
+						<Link href="/">
+							<FaTelegramPlane />
+						</Link>
 					</CardAction>
 				</CardHeader>
 				<CardContent>
