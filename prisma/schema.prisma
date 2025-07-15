@@ -1,0 +1,163 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          			Int       		@id @default(autoincrement())
+  email       			String    		@unique(map: "User_email_key")
+  password    			String?
+  inviteToken 			String    		@unique(map: "User_inviteToken_key")
+  role        			user_role 		@default(USER)
+  status      			Boolean   		@default(false)
+  createdAt   			DateTime  		@default(now())
+  balance     			Float     		@default(0)
+	payInGambling			Float     		@default(0)
+	payOutGambling		Float   			@default(0)
+	payInExchangers		Float     		@default(0)
+	payOutExchangers	Float   			@default(0)
+	devices     			Device[]
+	groups      			Group[]
+	requisites    		requisites[]
+	transactions  		Transaction[]
+	paymentStatus 		Boolean   		@default(false)
+	receiveStatus 		Boolean   		@default(false)
+	paymentSettings 	PaymentSetting?
+}
+
+model Device {
+	id          	Int       @id @default(autoincrement())
+	user    			User      @relation(fields: [userId], references: [id])
+	userId      	Int
+	deviceId    	String    @unique(map: "Device_deviceId_key")
+	name  				String
+	requisites    requisites[]
+	transactions  Transaction[]
+}
+
+model Group {
+	id        		Int      @id @default(autoincrement())
+	token     		String   @unique(map: "Invite_token_key")
+	name      		String
+	user    			User     @relation(fields: [userId], references: [id])
+	userId    		Int
+	requisites    requisites[]
+}
+
+model requisites {
+	id							Int       @id @default(autoincrement())
+	user        		User      @relation(fields: [userId], references: [id])
+	userId      		Int
+	device      		Device?    @relation(fields: [deviceId], references: [id])
+	deviceId    		Int?
+	group       		Group?     @relation(fields: [groupId], references: [id])
+	groupId     		Int?
+	currency    		currency  @relation(fields: [currencyId], references: [id])
+	currencyId  		Int
+	bankName    		bank_name @relation(fields: [bankId], references: [id])
+	bankId  				Int
+	paymentMethod   payment_method @relation(fields: [paymentId], references: [id])
+	paymentId 		  Int
+	cardNumber  	  String
+	cardOwner  		  String
+	card            String
+	minOrder				Int?
+	maxOrder				Int?
+	dayLimit				Int?
+	monthLimit			Int?
+	dayQuantity			Int?
+	monthQuantity		Int?
+	concurrentOrder	Int?
+	minutesDelay		Int?
+	status      		Boolean   @default(false)
+	createdAt   		DateTime  @default(now())
+	transactions    Transaction[]
+}
+
+model Transaction {
+	id          	Int       @id @default(autoincrement())
+	num						String    @unique(map: "Transaction_number_key")
+	user        	User      @relation(fields: [userId], references: [id])
+	userId      	Int
+	requisites  	requisites @relation(fields: [requisitesId], references: [id])
+	requisitesId	Int
+	device      	Device?   @relation(fields: [deviceId], references: [id])
+	deviceId    	Int?
+	amount      	Float
+	status      	TransactionStatus   @default(PENDING)
+	type        	TransactionType			//TODO: Add default value if needed
+	createdAt   	DateTime  @default(now())
+	description 	String?
+}
+
+model PaymentSetting {
+	id          		Int       			@id @default(autoincrement())
+	user        		User      			@relation(fields: [userId], references: [id])
+	userId      		Int							@unique(map: "PaymentSetting_userId_key")
+	minOrder				Int?
+	maxOrder				Int?
+	currency    		currency  			@relation(fields: [currencyId], references: [id])
+	currencyId  		Int 						@unique(map: "PaymentSetting_currencyId_key")
+	paymentMethod 	payment_method  @relation(fields: [paymentId], references: [id])
+	paymentId   		Int							@unique(map: "PaymentSetting_paymentId_key")	
+	bankName   			bank_name 			@relation(fields: [bankId], references: [id])
+	bankId      		Int							@unique(map: "PaymentSetting_bankId_key")
+}
+
+model currency {
+	id					Int       @id @default(autoincrement())
+	name        String    @unique(map: "Currency_name_key")
+	symbol      String
+	createdAt   DateTime  @default(now())
+	requisites  requisites[]
+	paymentSettings PaymentSetting?
+}
+
+model bank_name {
+	id					Int       @id @default(autoincrement())
+	name        String    @unique(map: "Bank_name_key")
+	icon				String?
+	createdAt   DateTime  @default(now())
+	requisites    requisites[]
+	paymentSettings PaymentSetting?
+}
+
+model payment_method {
+	id					Int       @id @default(autoincrement())
+	name        String    @unique(map: "Payment_method_name_key")
+	icon				String?
+	createdAt   DateTime  @default(now())
+	requisites    requisites[]
+	paymentSettings PaymentSetting?
+}
+
+enum user_role {
+  USER
+  ADMIN
+}
+
+enum TransactionStatus {
+	PENDING
+	COMPLETED
+	CANCELED
+	FAILED
+	REFUNDED
+	DISPUTED
+}
+
+enum TransactionType {
+	RECEIVE
+	PAYMENT
+}
+

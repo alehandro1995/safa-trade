@@ -1,6 +1,6 @@
 import { Toaster } from "@/components/ui/sonner"
 import type { Metadata } from "next";
-import {El_Messiri, Marhey, Oswald } from "next/font/google";
+import { Marhey, Oswald, Roboto_Mono  } from "next/font/google";
 import "./globals.css";
 
 const marhey = Marhey({
@@ -9,14 +9,14 @@ const marhey = Marhey({
 	weight: ["400", "500", "600", "700"],
 });
 
-const elMessiri = El_Messiri({
-	variable: "--font-messiri",
+const oswald = Oswald({
+	variable: "--font-oswald",
 	subsets: ["latin"],
 	weight: ["400", "500", "600", "700"],
 });
 
-const oswald = Oswald({
-	variable: "--font-oswald",
+const roboto = Roboto_Mono({
+	variable: "--font-roboto",
 	subsets: ["latin"],
 	weight: ["400", "500", "600", "700"],
 });
@@ -33,10 +33,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${elMessiri.variable} ${marhey.variable} ${oswald.variable} antialiased`}
-      >
-        {children}
+      <body className={`${roboto.variable} ${marhey.variable} ${oswald.variable} antialiased`}>
+        <main>{children}</main>
 				<Toaster />
       </body>
     </html>
