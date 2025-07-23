@@ -2,14 +2,17 @@
 import {prisma} from "@/client";
 import {Device} from "../../generated/prisma";
 import { randomBytes } from "crypto";
+import { cookies } from "next/headers";
 
-export async function addDevice(prevState: any, formData: FormData): Promise<{ status: 'error' | 'success' }> {
+export async function addDevice(name: string): Promise<Device> {
+	const cookiesStore = await cookies();
+	const email = cookiesStore.get('email')?.value;
+	if (!email) {
+		console.error('Email cookie not found');
+		throw new Error('Email cookie not found');
+	}
+
 	try {
-		const email = formData.get("email") as string;
-		if (!email) {
-			throw new Error('Email is required');
-		}
-
 		const user = await prisma.user.findUnique({
 			where: {
 				email: email,
@@ -18,11 +21,6 @@ export async function addDevice(prevState: any, formData: FormData): Promise<{ s
 
 		if (!user) {
 			throw new Error('User not found');
-		}
-
-		const name = formData.get("name") as string;
-		if (!name) {
-			throw new Error('Device name is required');
 		}
 
 		const deviceId = randomBytes(16).toString('hex');
@@ -38,15 +36,21 @@ export async function addDevice(prevState: any, formData: FormData): Promise<{ s
 			throw new Error('Failed to create device');
 		}
 
-		console.log('Device added:', device);
-		return { status: 'success' }
+		return device;
 	} catch (error) {
 		console.error('Error adding device:', error);
-		return { status: 'error' }
+		throw new Error('Error adding device');
 	}
 }
 
-export async function getDevices(email: string): Promise<Device[]> {
+export async function getDevices(): Promise<Device[]> {
+	const cookiesStore = await cookies();
+	const email = cookiesStore.get('email')?.value;
+	if (!email) {
+		console.error('Email cookie not found');
+		throw new Error('Email cookie not found');
+	}
+
 	try {
 		const user = await prisma.user.findUnique({
 			where: {
@@ -67,25 +71,26 @@ export async function getDevices(email: string): Promise<Device[]> {
 		return devices;
 	} catch (error) {
 		console.error('Error fetching devices:', error);
-		return [];
+		throw new Error('Error fetching devices');
 	}
 }
 
-export async function deleteDevice(deviceId: string): Promise<{ status: 'success' | 'error' }> {
+export async function deleteDevice(id: number): Promise<void> {
+	const cookiesStore = await cookies();
+	const email = cookiesStore.get('email')?.value;
+	if (!email) {
+		console.error('Email cookie not found');
+		throw new Error('Email cookie not found');
+	}
+	
 	try {
-		const device = await prisma.device.delete({
+		await prisma.device.delete({
 			where: {
-				deviceId: deviceId,
+				id: id,
 			}
 		});
-
-		if (!device) {
-			throw new Error('Device not found');
-		}
-
-		return { status: 'success' }
 	} catch (error) {
 		console.error('Error deleting device:', error);
-		return { status: 'error' }
+		throw new Error('Error deleting device');
 	}
 }

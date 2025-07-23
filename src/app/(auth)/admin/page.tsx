@@ -21,7 +21,7 @@ export default async function AdminPage() {
   }
   
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto">
       <Link href="/admin/create">
 				<Button className="absolute top-5 right-5">Создать пользователя</Button>
 			</Link>

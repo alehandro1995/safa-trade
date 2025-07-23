@@ -1,48 +1,55 @@
 "use server";
 import {prisma} from "@/client";
 import { randomBytes } from "crypto";
-//import { redirect } from "next/navigation";
-import type { User } from "../../generated/prisma";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
+import type { IUserInfo } from "@/types/User";
+import type { TransactionType } from "../../generated/prisma";
+import { deleteSession } from "@/lib/session";
 
 export async function createUser(prevState: any, formData: FormData): Promise<{ message: 'success' | 'error' }> {
 
   const email = formData.get("email") as string;
   if (!email) {
-    throw new Error("Error creating user")
+    throw new Error("Error creating user, email is required");
   }
 
-  const userExists = await prisma.user.findFirst({
-    where: {
-      email: email
-    }
-  });
+	try{
+		const userExists = await prisma.user.findFirst({
+			where: {
+				email: email
+			}
+		});
 
-  if (userExists) {
-    return { message: 'error' }
-  }
+		if (userExists) {
+			return { message: 'error' }
+		}
 
-	const balance = formData.get("balance") as string;
-	const payInGambling = formData.get("payInGambling") as string;
-	const payInExchangers = formData.get("payInExchangers") as string;
-	const payOutGambling = formData.get("payOutGambling") as string;
-	const payOutExchangers = formData.get("payOutExchangers") as string;
+		const balance = formData.get("balance") as string;
+		const payInGambling = formData.get("payInGambling") as string;
+		const payInExchangers = formData.get("payInExchangers") as string;
+		const payOutGambling = formData.get("payOutGambling") as string;
+		const payOutExchangers = formData.get("payOutExchangers") as string;
 
-  const user:User = await prisma.user.create({
-    data: {
-      email: email,
-      inviteToken: randomBytes(12).toString("hex"),
-			balance: parseFloat(balance) || 0,
-			payInGambling: parseFloat(payInGambling) || 0,
-			payInExchangers: parseFloat(payInExchangers) || 0,
-			payOutGambling: parseFloat(payOutGambling) || 0,
-			payOutExchangers: parseFloat(payOutExchangers) || 0
-    }
-  });
+		await prisma.user.create({
+			data: {
+				email: email,
+				inviteToken: randomBytes(12).toString("hex"),
+				balance: parseFloat(balance) || 0,
+				payInGambling: parseFloat(payInGambling) || 0,
+				payInExchangers: parseFloat(payInExchangers) || 0,
+				payOutGambling: parseFloat(payOutGambling) || 0,
+				payOutExchangers: parseFloat(payOutExchangers) || 0
+			}
+		});
 
-  revalidatePath("/admin");
-  return { message: 'success' };
+		revalidatePath("/admin");
+		return { message: 'success' };
+	} catch (error) {
+		console.error("Error creating user:", error);
+		throw new Error("Error creating user, please try again later.");
+	}
 }
 
 export async function updateUser(prevState: any, formData: FormData): Promise<{ message: 'success' | 'error' }> {
@@ -108,6 +115,30 @@ export async function changePassword(prevState: any, formData: FormData): Promis
 	return { message: "success" };
 }
 
+export async function changeUserStatus(type: TransactionType, status:boolean): Promise<void> {
+	const cookie = await cookies();
+	const email = cookie.get("email")?.value;
+	if (!email) {
+		throw new Error("User not authenticated");
+	}
+
+	const transformType = type.toLowerCase() as "payment" | "receive";
+	console.log(`Changing user status: ${transformType} to ${status} for email: ${email}`);
+	try{
+		await prisma.user.update({
+			where: {
+				email: email
+			},
+			data: {
+				[`${transformType}Status`]: status
+			}
+		});
+	} catch (error) {
+		console.error("Error updating user status:", error);
+		throw new Error("Error updating user status, please try again later.");
+	}
+}
+
 export async function deleteUser(email: string): Promise<void> {
 	try {
 		await prisma.user.delete({
@@ -120,4 +151,37 @@ export async function deleteUser(email: string): Promise<void> {
 	}
 
 	revalidatePath("/admin");
+}
+
+export async function getUser(): Promise<IUserInfo | null> {
+	const cookie = await cookies();
+	const email = cookie.get("email")?.value;
+	if (!email) {
+		throw new Error("Email is required to fetch user");
+	}
+
+	const user = await prisma.user.findUnique({
+		select: {
+			id: true,
+			email: true,
+			balance: true,
+			fundsBlocked: true,
+			payInGambling: true,
+			payInExchangers: true,
+			payOutGambling: true,
+			payOutExchangers: true,
+			paymentStatus: true,
+			receiveStatus: true
+		},
+		where: {
+			email: email
+		}
+	});
+
+	return user;
+}
+
+export async function logout() {
+	await deleteSession();
+	redirect('/login');
 }

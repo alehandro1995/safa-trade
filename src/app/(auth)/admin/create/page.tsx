@@ -38,7 +38,7 @@ function Page() {
 	}, [state]);
 
   return ( 
-    <div className="flex justify-center min-h-screen min-w-[800px]">
+    <div className="container mx-auto flex justify-center">
 			<form action={formAction}>
       <Card className="w-[600px] mt-20">
 				<CardHeader>

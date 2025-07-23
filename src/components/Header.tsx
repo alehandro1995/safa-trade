@@ -1,14 +1,18 @@
 "use client";
+import { useEffect } from "react";
+import { useUserStore } from "@/store/user";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Toggle } from "@/components/ui/toggle"
 import { BsFillBellFill } from "react-icons/bs";
 import { TbPointFilled } from "react-icons/tb";
 import { IoLogOutOutline } from "react-icons/io5";
 import { IoIosMenu } from "react-icons/io";
+import { getUser, logout } from "@/actions/userAction";
 
 import {
   Sheet,
@@ -23,13 +27,28 @@ import {
 import { Button } from "./ui/button";
 import MobileToggle from "./MobileToggle";
 import UserMenu from "./UserMenu";
+import type { IUserInfo } from "@/types/User";
 
 function Header() {
+	const createUser = useUserStore((state) => state.createUser);
+	const user = useUserStore((state) => state.user);
 	const isMobile = useMediaQuery("(min-width: 1024px)");
 	const pathname = usePathname();
 	if (!pathname) return null;
 
-	console.log("isMobile", isMobile);
+	useEffect(() => {
+		getUser().then((user) => {
+			if (!user) {
+				window.location.href = "/login";
+			}
+			
+			createUser(user as IUserInfo);
+		}).catch((error) => {
+			console.error("Error fetching user:", error);
+			window.location.href = "/login";
+		});
+	}, []);
+
 	return ( 
 		<div className="flex items-center h-12 lg:h-16 bg-emerald-100 text-green-900 shadow-md px-2 lg:px-4">
 			<Link href="/" className="w-fit flex items-center text-lg lg:text-2xl font-bold">
@@ -53,25 +72,35 @@ function Header() {
 					</SheetTrigger>
 					<SheetContent className="w-full h-screen overflow-y-auto" side="right">
 						<SheetHeader>
-							<SheetTitle>test@mail.ru</SheetTitle>
+							<SheetTitle>{user ? user.email : <Skeleton className="h-4 w-1/2" />}</SheetTitle>
 						</SheetHeader>
-						<MobileToggle	/>
+						{ user
+							? <MobileToggle	paymentStatus={user.paymentStatus} receiveStatus={user.receiveStatus}/>
+							: <div className="pl-4">
+								<Skeleton className="h-4 w-1/2 mb-2" />
+								<Skeleton className="h-4 w-1/2 mb-2" />
+								</div>
+						}
 						{LinkList(isMobile, pathname)}
 						<SheetFooter>
-							<Link href="/login">
-								<SheetClose asChild>
-									<Button variant="secondary" className="w-full">
-										<IoLogOutOutline />
-										Выйти
-									</Button>
-								</SheetClose>
-							</Link>
+							<SheetClose asChild>
+								<Button
+									onClick={logout} 
+									variant="secondary" 
+									className="w-full">
+									<IoLogOutOutline />
+									Выйти
+								</Button>
+							</SheetClose>
 						</SheetFooter>
 					</SheetContent>
 				</Sheet>
 				:
 				<div className="w-fit flex items-center gap-x-4">
-					<UserMenu />
+					{user
+						? <UserMenu email={user.email} paymentStatus={user.paymentStatus} receiveStatus={user.receiveStatus} />
+						: <Skeleton className="h-10 w-10 rounded-full" />
+					}
 					<Toggle className="relative">
 						<TbPointFilled className="absolute left-0 top-0 text-yellow-300" />
 						<BsFillBellFill className="text-2xl text-green-900" />

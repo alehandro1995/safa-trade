@@ -2,14 +2,17 @@
 import {prisma} from "@/client";
 import {Group} from "../../generated/prisma";
 import { randomBytes } from "crypto";
+import { cookies } from "next/headers";
 
-export async function addGroup(prevState: any, formData: FormData): Promise<{ status: 'error' | 'success' }> {
+export async function addGroup(name:string): Promise<Group> {
+	const cookiesStore = await cookies();
+	const email = cookiesStore.get('email')?.value;
+	if (!email) {
+		console.error('Email cookie not found');
+		throw new Error('Email cookie not found');
+	}
+
 	try {
-		const email = formData.get("email") as string;
-		if (!email) {
-			throw new Error('Email is required');
-		}
-
 		const user = await prisma.user.findUnique({
 			where: {
 				email: email,
@@ -20,11 +23,6 @@ export async function addGroup(prevState: any, formData: FormData): Promise<{ st
 			throw new Error('User not found');
 		}
 
-		const name = formData.get("name") as string;
-		if (!name) {
-			throw new Error('Name is required');
-		}
-
 		const token = randomBytes(16).toString('hex');
 		const group = await prisma.group.create({
 			data: {
@@ -33,20 +31,27 @@ export async function addGroup(prevState: any, formData: FormData): Promise<{ st
 				userId: user.id,
 			}
 		});
-		
-		if (!group) {
-			throw new Error('Group creation failed');
-		}
 
-		return { status: 'success' }
+		if (!group) {
+			throw new Error('Failed to create group');
+		}
+		
+		return group;
 	} catch (error) {
 		console.error('Ошибка при добавлении группы:', error);
-		return { status: 'error' }
+		throw new Error('Ошибка при добавлении группы');
 	}
 }
 
-export async function getGroups(email: string): Promise<Group[]> {
+export async function getGroups(): Promise<Group[]> {
 	try {
+		const cookiesStore = await cookies();
+		const email = cookiesStore.get('email')?.value;
+		if (!email) {
+			console.error('Email cookie not found');
+			throw new Error('Email cookie not found');
+		}
+
 		const user = await prisma.user.findUnique({
 			where: {
 				email: email,
@@ -66,11 +71,18 @@ export async function getGroups(email: string): Promise<Group[]> {
 		return groups;
 	} catch (error) {
 		console.error('Ошибка при получении групп:', error);
-		return [];
+		throw new Error('Ошибка при получении групп');
 	}
 }
 
-export async function deleteGroup(id: number): Promise<{ status: 'error' | 'success' }> {
+export async function deleteGroup(id: number): Promise<void> {
+	const cookiesStore = await cookies();
+	const email = cookiesStore.get('email')?.value;
+	if (!email) {
+		console.error('Email cookie not found');
+		throw new Error('Email cookie not found');
+	}
+
 	try {
 		await prisma.group.delete({
 			where: {
@@ -78,9 +90,8 @@ export async function deleteGroup(id: number): Promise<{ status: 'error' | 'succ
 			}
 		});
 
-		return { status: 'success' }
 	} catch (error) {
 		console.error('Ошибка при удалении группы:', error);
-		return { status: 'error'}
+		throw new Error('Ошибка при удалении группы');
 	}
 }

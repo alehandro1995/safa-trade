@@ -1,11 +1,14 @@
 "use client";
+import { useState } from "react";
 import { toast } from "sonner";
-import Link from "next/link";
+//import Link from "next/link";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { IoLogOutOutline } from "react-icons/io5";
+import { IoLogOutOutline, IoPersonSharp } from "react-icons/io5";
+import { changeUserStatus, logout } from "@/actions/userAction";
+import type { TransactionType } from "../../generated/prisma";
 
 import {
   DropdownMenu,
@@ -15,56 +18,72 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-function UserMenu() {
-	const handleSwitchChange = (checked: boolean, data: "receive" | "send") => {
-		if (data === "receive") {
-			toast(`${checked ? "Приём включён" : "Приём выключен"}`, {
-        description: `${checked ? "Ваш аккаунт включен на приём средств" : "Ваш аккаунт выключен на приём средств"}`,
-        action: {
-          label: "X",
-					onClick: () => console.log("action clicked"),
-        },
-      })
-		} else if (data === "send") {
-			toast(`${checked ? "Выплаты включены" : "Выплаты выключены"}`, {
-        description: `${checked ? "Ваш аккаунт включен на выплату средств" : "Ваш аккаунт выключен на выплату средств"}`,
-        action: {
-          label: "X",
-					onClick: () => console.log("action clicked"),
-        },
-      })
-		}
+type UserMenuProps = {
+	email: string;
+	paymentStatus: boolean;
+	receiveStatus: boolean;
+};
+
+function UserMenu({email, paymentStatus, receiveStatus}: UserMenuProps) {
+	const [receive, setReceive] = useState(receiveStatus);
+	const [payment, setPayment] = useState(paymentStatus);
+
+	const handleSwitchChange = (checked: boolean, data: "receive" | "payment") => {
+		const type = data.toUpperCase() as TransactionType;
+		
+		changeUserStatus(type, checked)
+			.then(() => {
+				if (data === "receive") {
+					setReceive(checked);
+					toast.success(`${checked ? "Приём включён" : "Приём выключен"}`)
+				} else if (data === "payment") {
+					setPayment(checked);
+					toast.success(`${checked ? "Выплаты включены" : "Выплаты выключены"}`)
+				}
+			}).catch((error) => {
+				console.error("Error changing user status:", error);
+				toast.error("Ошибка при изменении статуса");
+			});
 	}
 	
 	return ( 
 		<DropdownMenu>
 			<DropdownMenuTrigger className="cursor-pointer">
 				<Avatar className="w-10 h-10">
-					<AvatarFallback>MU</AvatarFallback>			
+					<AvatarFallback>
+						<IoPersonSharp className="w-6 h-6" />
+					</AvatarFallback>			
 				</Avatar>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent>
-				<DropdownMenuLabel>test@mail.ru</DropdownMenuLabel>
+				<DropdownMenuLabel>{email}</DropdownMenuLabel>
 				<DropdownMenuSeparator />
 				<DropdownMenuLabel>
 					<div className="flex items-center space-x-2">
-						<Switch id="receive" onCheckedChange={(checked) => handleSwitchChange(checked, "receive")} />
+						<Switch 
+							onCheckedChange={(checked) => handleSwitchChange(checked, "receive")} 
+							checked={receive} 
+						/>
 						<Label htmlFor="receive">Приём</Label>
 					</div>
 				</DropdownMenuLabel>
 				<DropdownMenuLabel>
 					<div className="flex items-center space-x-2">
-						<Switch id="send" onCheckedChange={(checked) => handleSwitchChange(checked, "send")}/>
+						<Switch 
+							onCheckedChange={(checked) => handleSwitchChange(checked, "payment")} 
+							checked={payment} 
+						/>
 						<Label htmlFor="send">Выплата</Label>
 					</div>
 				</DropdownMenuLabel>
 				<DropdownMenuLabel>
-					<Link href="/login" className="w-full">
-						<Button variant="link" className="w-full">
-							<IoLogOutOutline/>
-							Выйти
-						</Button>
-					</Link>
+					<Button
+						onClick={logout} 
+						variant="link" 
+						className="w-full">
+						<IoLogOutOutline/>
+						Выйти
+					</Button>
 				</DropdownMenuLabel>
 			</DropdownMenuContent>
 		</DropdownMenu>

@@ -1,7 +1,7 @@
-import Image from "next/image";
 import Link from "next/link";
-import ModalReceive from "@/components/ModalReceive";
-import ModalSend from "@/components/ModalSend";
+import ModalReceive from "@/components/modals/ModalReceive";
+import ModalSend from "@/components/modals/ModalSend";
+import MainBalance from "@/components/MainBalance";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { MyChart } from "@/components/MyChart";
@@ -16,6 +16,7 @@ import {
 
 
 export default function Home() {
+	
   return (
 		<div className="flex flex-col container mx-auto px-5 py-10">
 			<h1 className="text-3xl font-bold mb-5">Главная</h1>
@@ -24,14 +25,7 @@ export default function Home() {
 					<CardHeader>
 						<CardTitle className="text-2xl font-semibold">Баланс:</CardTitle>
 					</CardHeader>
-					<div className="flex items-center gap-x-3">
-						<Image src="/tether.png" width={50} height={50} alt="Tether"/>
-						<div>
-							<h4 className="text-xl font-semibold">0.00000000 USDT</h4>
-							<h4 className="text-sm text-red-500">Страховой лимит: 0.00000000 USDT</h4>
-							<h4 className="text-sm text-blue-600">Заблокировано: 0.00000000 USDT</h4>
-						</div>
-					</div>
+					<MainBalance />
 					<div className="flex flex-col sm:flex-row sm:items-center gap-5 mt-2"> 
 						<Link href="/history" className="flex w-full sm:w-fit">
 							<Button variant="secondary" className="w-full sm:w-fit">
@@ -43,7 +37,7 @@ export default function Home() {
 						<ModalReceive />
 					</div>
 				</Card>
-				<Card className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+				<Card className="grid grid-cols-1 sm:grid-cols-2">
 					<div className="bg-green-700 p-5 rounded-lg text-emerald-100 flex items-center justify-between">
 						<div>
 							<h4 className="text-lg font-semibold">Оборот</h4>

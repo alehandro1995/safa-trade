@@ -14,7 +14,7 @@ async function Page({params}: {params: Promise<{alias: string}>}) {
 	}
 
 	return ( 
-		<div className="flex flex-col items-center min-h-screen min-w-[800px]">
+		<div className="container mx-auto flex justify-center">
 			<Form user={user}/>
 		</div>
 	);
