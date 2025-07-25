@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { FaRegTrashCan, FaPencil } from "react-icons/fa6";
 import {Switch} from "../ui/switch";
 import { changeStatus, deleteRequisites } from "@/actions/requisitesAction";
-
+import { Button } from "../ui/button";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,37 +19,9 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
-import type { 
-	Group, 
-	Device, 
-	currency, 
-	bank_name, 
-	payment_method 
-} from "../../../generated/prisma";
-import { Button } from "../ui/button";
+import type { IRequisites } from "@/types/Requisites";
 
-export interface Requisite {
-	id: number;
-	card: string;
-	cardOwner: string;
-	cardNumber: string;
-	minOrder: number | null;
-	maxOrder: number | null;
-	dayLimit: number | null;
-	monthLimit: number | null;
-	dayQuantity: number | null;
-	monthQuantity: number | null;
-	concurrentOrder: number | null;
-	minutesDelay: number | null;
-	status: boolean;
-	device?: Device | null;
-	group?: Group | null;
-	currency: currency;
-	bankName: bank_name;
-	paymentMethod: payment_method;
-}
-
-function RequisiteItem({ item, index }: { item: Requisite; index: number }) {
+function RequisiteItem({ item, index }: { item: IRequisites; index: number }) {
 	const [isActive, setIsActive] = useState(item.status);
 	const removeRequisite = useRequisitesStore((state) => state.removeRequisite);
 
@@ -99,17 +71,17 @@ function RequisiteItem({ item, index }: { item: Requisite; index: number }) {
 				</div>
 				<div>{item.currency.symbol}</div>
 				<div className="flex flex-col col-span-2">
-					<span>{item.minOrder ? "от " + item.minOrder + " " + item.currency.symbol : "---"}</span>
-					<span>{item.maxOrder ? "до " + item.maxOrder + " " + item.currency.symbol : "---"}</span>
+					<span>{item.minOrder ? "от " + item.minOrder + " " + item.currency.symbol : '--- / ---'}</span>
+					<span>{item.maxOrder ? "до " + item.maxOrder + " " + item.currency.symbol : '--- / ---'}</span>
 				</div>
 				<div>
 					<div className="p-2 bg-popover rounded-md text-xs flex w-fit gap-x-1">
-						<span>{item.dayLimit ? item.dayLimit : "---"}</span> \ <span>{item.monthLimit ? item.monthLimit : "---"}</span>
+						<span>{item.dayLimit ? item.dayLimit : "---"}</span> / <span>{item.monthLimit ? item.monthLimit : "---"}</span>
 					</div>
 				</div>
 				<div>
 					<div className="p-2 bg-popover rounded-md text-xs flex w-fit gap-x-1">
-						<span>{item.dayQuantity ? item.dayQuantity : "---"}</span> \ <span>{item.monthQuantity ? item.monthQuantity : "---"}</span>
+						<span>{item.dayQuantity ? item.dayQuantity : "---"}</span> / <span>{item.monthQuantity ? item.monthQuantity : "---"}</span>
 					</div>
 				</div>
 				<div>

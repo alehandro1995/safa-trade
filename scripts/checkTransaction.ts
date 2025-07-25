@@ -1,6 +1,4 @@
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient();
+import { prisma } from '@/client'
 
 async function main() {
 	console.log('Checking for pending transactions...');

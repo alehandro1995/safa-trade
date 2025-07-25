@@ -3,7 +3,8 @@ import type {
 	bank_name, 
 	currency, 
 	payment_method, 
-	Group 
+	Group,
+	Device 
 } from "../../generated/prisma";
 
 export interface IRequisites extends requisites {
@@ -11,6 +12,7 @@ export interface IRequisites extends requisites {
 	currency: currency;
 	paymentMethod: payment_method;
 	group: Group | null;
+	device: Device | null;
 }
 
 export interface ICreateRequisites {

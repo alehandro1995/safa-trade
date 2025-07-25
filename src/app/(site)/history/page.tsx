@@ -1,6 +1,93 @@
-function Page() {
+import { prisma } from "@/client"; 
+import { columns } from "./columns"
+import { DataTable } from "./data-table"
+import { cookies } from "next/headers";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
+
+import type { HistoryColumns } from "@/types/History";
+
+async function getData(id:number): Promise<HistoryColumns[]> {
+	const data = await prisma.transaction.findMany({
+		where: { 
+			userId: id,
+			NOT: { status: "PENDING" } 
+		},
+		select: {
+			createdAt: true,
+			amount: true,
+			status: true,
+			type: true,
+			balanceBefore: true,
+			balanceAfter: true,
+			requisites: {
+				select: {
+					currency: {
+						select: {
+							symbol: true,
+						},
+					},
+				},
+			},
+		},
+		orderBy: {
+			createdAt: "desc",
+		},
+	});
+
+	return data.map((item) => ({
+		createdAt: item.createdAt,
+		amount: `${item.amount} ${item.requisites.currency.symbol}`,
+		type: item.type,
+		status: item.status,
+		balanceBefore: item.balanceBefore,
+		balanceAfter: item.balanceAfter,
+	}));
+}
+
+async function Page() {
+	const cookie = await  cookies();
+	const email = cookie.get("email")?.value || "";
+	if (!email) {
+		throw new Error("Email cookie not found");
+	}
+
+	const user = await prisma.user.findUnique({
+		where: { email },
+		select: {
+			id: true,
+		},
+	});
+
+	if (!user) {
+		throw new Error("User not found");
+	}
+	
+	const data = await getData(user.id);
+
 	return ( 
-		<div>History Page</div>	
+		<section className="p-6">
+			<Breadcrumb>
+				<BreadcrumbList>
+					<BreadcrumbItem>
+						<BreadcrumbLink href="/">Главная</BreadcrumbLink>
+					</BreadcrumbItem>
+					<BreadcrumbSeparator>/</BreadcrumbSeparator>
+					<BreadcrumbItem>
+						<BreadcrumbPage>История</BreadcrumbPage>
+					</BreadcrumbItem>
+				</BreadcrumbList>
+			</Breadcrumb>
+			<div className="py-10">
+      	<DataTable columns={columns} data={data} />
+    	</div>
+		</section>
 	);
 }
 

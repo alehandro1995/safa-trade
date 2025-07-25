@@ -1,6 +1,4 @@
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient();
+import { prisma } from '@/client'
 
 const EMAIL = 'test@mail.ru';
 const AMOUNT = 5120; 
@@ -22,7 +20,7 @@ async function main() {
 		return;
 	}
 
-	const transactionAmount = AMOUNT / CURRENT_RATE;
+	const transactionAmount = AMOUNT / CURRENT_RATE; //57.373375
 	if ((user.balance - LIMIT) < transactionAmount) {
 		console.error(`User with email ${EMAIL} has insufficient operational balance.`);
 		return;

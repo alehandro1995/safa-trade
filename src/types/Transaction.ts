@@ -1,7 +1,7 @@
 import { TransactionStatus, TransactionHistory } from "../../generated/prisma";
 
-type TransactionHistoryStatus = Pick<TransactionHistory, "transactionStatus" | "createdAt" | "rate" | "amountInCurrency" | "amountInCurrencyFee">;
-type TransactionHistoryByFilter = Omit<TransactionHistoryStatus, "createdAt" | "rate">
+type TransactionHistoryStatus = Pick<TransactionHistory, "id" | "transactionStatus" | "createdAt" | "rate" | "amountInCurrency" | "amountInCurrencyFee" | "initiator">;
+type TransactionHistoryByFilter = Omit<TransactionHistoryStatus, "id" | "initiator" | "createdAt" | "rate">
 
 export interface ITransaction {
 	id: number;

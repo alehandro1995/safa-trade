@@ -1,8 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
 import DealsItem from "./DealsItem";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ITransaction } from "@/types/Transaction";
-import { TransactionType, TransactionStatus } from "../../../generated/prisma";
+import { 
+	TransactionType, 
+	TransactionStatus 
+} from "../../../generated/prisma";
 
 type DealsListProps = {
 	status: TransactionStatus;
@@ -35,14 +39,18 @@ function DealsList({status, type}: DealsListProps) {
 
   if (loading) {
 		return (
-			<div>Loading...</div>
+			<div className="flex flex-col gap-y-5 w-full">
+				<Skeleton className="h-12 w-full" />
+				<Skeleton className="h-12 w-full" />
+				<Skeleton className="h-12 w-full" />
+				<Skeleton className="h-12 w-full" />
+			</div>
 		);
 	}
 
   return (
-		<>
-    <div className="flex flex-col p-5 bg-white shadow-sm rounded-2xl mt-8 text-sm">
-      <div className="grid grid-cols-6 items-end border-b-[1px] border-gray-900 p-2 font-semibold">
+    <div className="flex flex-col min-w-[1280px]">
+      <div className="grid grid-cols-6 items-end border-b-[1px] border-border p-2 font-semibold">
         <div>ID/Дата</div>
         <div>Статус</div>
         <div>Курс</div>
@@ -50,29 +58,19 @@ function DealsList({status, type}: DealsListProps) {
         <div>Реквизиты</div>
       </div>
 
-      {deals.map((transaction, index) => (
-        <DealsItem
-          key={transaction.id}
-          id={transaction.id}
-					index={index}
-          num={transaction.num}
-          createdAt={transaction.createdAt}
-					rate={transaction.transactionHistory[0].rate}
-					amountInCurrency={transaction.transactionHistory[0].amountInCurrency}
-					updatedAt={transaction.transactionHistory[0].createdAt}
-          status={transaction.transactionHistory[0].transactionStatus}
-          amount={transaction.amount}
-          symbol={transaction.requisites.currency.symbol}
-          bankName={transaction.requisites.bankName.name}
-          paymentMethod={transaction.requisites.paymentMethod.name}
-          cardOwner={transaction.requisites.cardOwner}
-					card={transaction.requisites.card}
-					setDeals={setDeals}
-					deals={deals}
-        />
-      ))}
+      {deals.length > 0 ? 
+				deals.map((transaction, index) => (
+					<DealsItem 
+						key={transaction.id} 
+						index={index} 
+						transaction={transaction}
+						deals={deals}
+						setDeals={setDeals}
+					/>
+				)) : (
+        <div className="w-full text-center mt-4">Список пуст</div>
+      )}
     </div>
-		</>
   );
 }
 

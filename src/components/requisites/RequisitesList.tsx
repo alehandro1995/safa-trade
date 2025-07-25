@@ -1,14 +1,21 @@
 "use client";
 import { useRequisitesStore } from "@/store/requisites";
 import RequisiteItem from "./RequisiteItem";
-import Loading from "../Loading";
+import { Skeleton } from "@/components/ui/skeleton";
 
 
 function RequisitesList() {
 	const requisites = useRequisitesStore((state) => state.requisites);
 
 	if (!requisites) {
-		return <Loading />;
+		return (
+			<div className="flex flex-col gap-y-5 w-full">
+				<Skeleton className="h-12 w-full" />
+				<Skeleton className="h-12 w-full" />
+				<Skeleton className="h-12 w-full" />
+				<Skeleton className="h-12 w-full" />
+			</div>
+		);
 	}
 
 	return ( 

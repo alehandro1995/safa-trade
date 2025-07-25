@@ -18,27 +18,64 @@ export async function GET(request: Request) {
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) return NextResponse.json({ error: "User not found" }, { status: 403 });
 
-  const transactions = await prisma.transaction.findMany({
-    where: {
-      userId: user.id,
-      status: status,
-			type: type
-    },
-    include: {
-      requisites: {
-        include: {
-          device: true,
-          group: true,
-          currency: true,
-          bankName: true,
-          paymentMethod: true,
-        },
-      },
-    },
-    orderBy: {
-      num: "asc",
-    },
-  });
+	// Получаем дату 12 часов назад
+	const twelveHoursAgo = new Date(Date.now() - 12 * 60 * 60 * 1000);
+
+	const transactions = await prisma.transaction.findMany({
+		where: {
+			userId: user.id,
+			status: status,
+			type: type,
+			createdAt: {
+				gte: twelveHoursAgo,
+			},
+		},
+		select: {
+			id: true,
+			num: true,
+			amount: true,
+			status: true,
+			createdAt: true,
+			requisites: {
+				select: {
+					card: true,
+					cardOwner: true,
+					currency: {
+						select: {
+							symbol: true,
+						},
+					},
+					paymentMethod: {
+						select: {
+							name: true,
+						},
+					},
+					bankName: {
+						select: {
+							name: true,
+						},
+					},
+				},
+			},
+			transactionHistory: {
+				select: {
+					id: true,
+					rate: true,
+					amountInCurrency: true,
+					amountInCurrencyFee: true,
+					transactionStatus: true,
+					createdAt: true,
+					initiator: true,
+				},
+				orderBy: {
+					createdAt: "desc",
+				},
+			},
+		},
+		orderBy: {
+			num: "desc",
+		},
+	});
 
   return NextResponse.json({ transactions });
 }

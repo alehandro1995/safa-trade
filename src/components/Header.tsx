@@ -50,7 +50,7 @@ function Header() {
 	}, []);
 
 	return ( 
-		<div className="flex items-center h-12 lg:h-16 bg-emerald-100 text-green-900 shadow-md px-2 lg:px-4">
+		<div className="flex items-center h-12 lg:h-16 bg-emerald-200 text-green-900 shadow-md px-2 lg:px-4">
 			<Link href="/" className="w-fit flex items-center text-lg lg:text-2xl font-bold">
 				<Image 
 					src="/logo.png" 

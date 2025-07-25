@@ -25,3 +25,12 @@ export type HistoryType = {
 		}
 	}
 }
+
+export type HistoryColumns = {
+	createdAt: Date,
+	amount: string,
+	type: TransactionType,
+	status: string,
+	balanceBefore: number,
+	balanceAfter: number,
+}

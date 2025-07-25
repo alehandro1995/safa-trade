@@ -1,11 +1,11 @@
 "use server";
-import {prisma} from "../../prisma/client";
+import {prisma} from "@/client";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
-import { TransactionStatus } from "@prisma/client";
-import { ITransactionByFilter } from "@/types/transaction";
+import { TransactionStatus } from "../../generated/prisma";
+import { ITransactionByFilter } from "@/types/Transaction";
 
-export async function changeTransactionStatus(id: number) {
+export async function completeTransaction(id: number) {
 	try {
 		const user = await checkUser();
 		const txHistory = await prisma.transactionHistory.findFirst({
@@ -114,6 +114,7 @@ export async function getTransactionByFilter(formData: FormData): Promise<ITrans
 					transactionStatus:  transactionStatus,
 				},
 				select: {
+					createdAt: true,
 					transactionStatus: true,
 					amountInCurrency: true,
 					amountInCurrencyFee: true,
