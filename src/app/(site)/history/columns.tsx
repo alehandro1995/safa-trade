@@ -2,23 +2,33 @@
 import { Badge } from "@/components/ui/badge"
 import { ColumnDef } from "@tanstack/react-table"
 import { HiOutlineArrowCircleDown, HiOutlineArrowCircleUp } from "react-icons/hi";
-
+import HistoryPopover from "@/components/history/HistoryPopover";
 import type { HistoryColumns } from "@/types/History"
+import { BsList } from "react-icons/bs";
+import { Button } from "@/components/ui/button"
+import { ArrowUpDown } from "lucide-react";
+import { format } from "date-fns";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/popover"
 
 export const columns: ColumnDef<HistoryColumns>[] = [
   {
     accessorKey: "createdAt",
-    header: "Дата",
-		cell: ({ row }) => {
-			const date = new Date(row.getValue("createdAt"));
-			return date.toLocaleDateString("ru-RU", {
-				year: "numeric",
-				month: "2-digit",
-				day: "2-digit",
-				hour: "2-digit",
-				minute: "2-digit",
-			});
-		},
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Дата
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
+		cell: ({ row }) => format(new Date(row.getValue("createdAt")), "dd.MM.yyyy"),
   },
   {
     accessorKey: "amount",
@@ -62,4 +72,36 @@ export const columns: ColumnDef<HistoryColumns>[] = [
 			return `${balance.toFixed(6)} USDT`;
 		},
 	},
+	{
+    id: "actions",
+    cell: ({ row }) => {
+			
+      const {id} = row.original;
+
+			if (!id) {
+				throw new Error("Transaction not found");
+			}
+
+      return (
+        <Popover>
+					<PopoverTrigger asChild>
+						<Button
+							size="sm"
+							variant="outline"	
+							className="w-fit ml-auto">
+							<BsList className="text-2xl text-foreground" />		
+						</Button>
+					</PopoverTrigger>
+					<PopoverContent 
+						side="left"
+						align="end"
+						avoidCollisions={true}
+						className="w-[600px]"
+						>
+						<HistoryPopover id={id} />
+					</PopoverContent>
+				</Popover>
+      )
+    },
+  },
 ]

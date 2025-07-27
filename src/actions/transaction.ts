@@ -4,8 +4,9 @@ import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { TransactionStatus } from "../../generated/prisma";
 import { ITransactionByFilter } from "@/types/Transaction";
+import { TransactionWithHistory } from "@/types/History";
 
-export async function completeTransaction(id: number) {
+export async function completeTransaction(id: number): Promise<void> {
 	try {
 		const user = await checkUser();
 		const txHistory = await prisma.transactionHistory.findFirst({
@@ -63,14 +64,49 @@ export async function completeTransaction(id: number) {
 	}
 }
 
-export async function getTransactionById(id: number) {
+export async function getTransactionById(id: number): Promise<TransactionWithHistory> {
+	await checkUser();
+
 	const transaction = await prisma.transaction.findUnique({
 		where: {
 			id: id
 		},
-		include: {
-			transactionHistory: true,
-			requisites: true,
+		select:{
+			id: true,
+			num: true,
+			userId: true,
+			requisitesId: true,
+			status: true,
+			createdAt: true,
+			type: true,
+			amount: true,
+			balanceBefore: true,
+			balanceAfter: true,
+			requisites: {
+				select: {
+					id: true,
+					cardOwner: true,
+					card: true,
+					currency: {
+						select: {
+							symbol: true
+						}
+					}
+				},
+			},
+			transactionHistory: {
+				select: {
+					id: true,
+					createdAt: true,
+					transactionId: true,
+					transactionStatus: true,
+					initiator: true,
+					rate: true,
+					amountInCurrency: true,
+					amountInCurrencyFee: true,
+					description: true
+				}
+			}
 		}
 	});
 

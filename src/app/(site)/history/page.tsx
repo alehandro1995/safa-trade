@@ -20,6 +20,7 @@ async function getData(id:number): Promise<HistoryColumns[]> {
 			NOT: { status: "PENDING" } 
 		},
 		select: {
+			id: true,
 			createdAt: true,
 			amount: true,
 			status: true,
@@ -42,6 +43,7 @@ async function getData(id:number): Promise<HistoryColumns[]> {
 	});
 
 	return data.map((item) => ({
+		id: item.id,
 		createdAt: item.createdAt,
 		amount: `${item.amount} ${item.requisites.currency.symbol}`,
 		type: item.type,
@@ -84,7 +86,7 @@ async function Page() {
 					</BreadcrumbItem>
 				</BreadcrumbList>
 			</Breadcrumb>
-			<div className="py-10">
+			<div className="py-10 overflow-auto">
       	<DataTable columns={columns} data={data} />
     	</div>
 		</section>

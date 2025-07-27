@@ -1,4 +1,8 @@
-import { TransactionType } from "../../generated/prisma";
+import { 
+	TransactionType, 
+	TransactionHistory, 
+	Transaction 
+} from "../../generated/prisma";
 
 export interface IHistoryFilter {
 	totalCount: number;
@@ -27,10 +31,23 @@ export type HistoryType = {
 }
 
 export type HistoryColumns = {
+	id: number,
 	createdAt: Date,
 	amount: string,
 	type: TransactionType,
 	status: string,
 	balanceBefore: number,
 	balanceAfter: number,
+}
+
+export interface TransactionWithHistory extends Transaction {
+	transactionHistory: TransactionHistory[];
+	requisites: {
+		id: number;
+		cardOwner: string;
+		card: string;
+		currency: {
+			symbol: string;
+		};
+	};
 }
