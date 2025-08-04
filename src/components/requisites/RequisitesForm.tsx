@@ -45,7 +45,7 @@ import type {
 	payment_method, 
 	Group, 
 	Device 
-} from "../../../generated/prisma";
+} from "@/generated/prisma";
 
 import type { ICreateRequisites, IUpdateRequisites } from "@/types/Requisites";
 

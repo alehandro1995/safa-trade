@@ -1,55 +1,30 @@
 "use server";
 import {prisma} from "@/client";
 import { revalidatePath } from "next/cache";
-import { cookies } from "next/headers";
-import { TransactionStatus } from "../../generated/prisma";
-import { ITransactionByFilter } from "@/types/Transaction";
+import { cookies } from "next/headers";;
+import { ITransactionByFilter, TransactionFilter } from "@/types/Transaction";
 import { TransactionWithHistory } from "@/types/History";
+import { StatisticPeriod, StatisticTransaction } from "@/types/Statistic";
 
 export async function completeTransaction(id: number): Promise<void> {
 	try {
 		const user = await checkUser();
-		const txHistory = await prisma.transactionHistory.findFirst({
-			where: {
-				transactionId: id,
-				transactionStatus: 'PENDING'
-			},
-			orderBy: {
-				createdAt: 'desc'
-			}
-		});
-
-		if (!txHistory) {
-			throw new Error("Transaction history not found for this transaction.");
-		}
 
 		await prisma.$transaction(async (tx) => {
 			// Обновляем статус транзакции
-			await tx.transaction.update({
+			const transaction = await tx.transaction.update({
 				where: { id },
 				data: { 
 					status: 'COMPLETED',
-					balanceBefore: user.balance,
-					balanceAfter: user.balance + txHistory.amountInCurrencyFee, 
-				},
-			});
-
-			await tx.transactionHistory.create({
-				data: {
-					transactionId: id,
-					transactionStatus: 'COMPLETED',
-					rate: txHistory.rate,
-					amountInCurrency: txHistory.amountInCurrency,
-					amountInCurrencyFee: txHistory.amountInCurrencyFee,
 					initiator: 'TREADER'
-				}
+				},
 			});
 
 			await tx.user.update({
 				where: { id: user.id },
 				data: {
-					balance: user.balance + txHistory.amountInCurrencyFee,
-					fundsBlocked: user.fundsBlocked - txHistory.amountInCurrency
+					balance: user.balance + transaction.amountInCurrencyFee,
+					fundsBlocked: user.fundsBlocked - transaction.amountInCurrency
 				}
 			});
 		});
@@ -80,8 +55,10 @@ export async function getTransactionById(id: number): Promise<TransactionWithHis
 			createdAt: true,
 			type: true,
 			amount: true,
-			balanceBefore: true,
-			balanceAfter: true,
+			initiator: true,
+			rate: true,
+			amountInCurrency: true,
+			amountInCurrencyFee: true,
 			requisites: {
 				select: {
 					id: true,
@@ -94,19 +71,6 @@ export async function getTransactionById(id: number): Promise<TransactionWithHis
 					}
 				},
 			},
-			transactionHistory: {
-				select: {
-					id: true,
-					createdAt: true,
-					transactionId: true,
-					transactionStatus: true,
-					initiator: true,
-					rate: true,
-					amountInCurrency: true,
-					amountInCurrencyFee: true,
-					description: true
-				}
-			}
 		}
 	});
 
@@ -117,21 +81,19 @@ export async function getTransactionById(id: number): Promise<TransactionWithHis
 	return transaction;
 }
 
-export async function getTransactionByFilter(formData: FormData): Promise<ITransactionByFilter[]> {
+export async function getTransactionByFilter(data: TransactionFilter): Promise<ITransactionByFilter[]> {
 	const user = await checkUser();
-	const from = formData.get("from")?.toString();
-	const to = formData.get("to")?.toString();
-	const status = formData.get("status")?.toString();
-	//console.log("Фильтр статистики:", { from, to, status });
-	
-	if (!status){
-		throw new Error("Invalid status filter");
-	}
+	const from = data.from;
+	const to = data.to;
+	const status = data.status;
 
-	const transactionStatus: TransactionStatus = status as TransactionStatus;
-	const filter: any = {};
-	filter.userId = user.id;
-	filter.status =  transactionStatus;
+	const filter: any = {
+		userId: user.id,
+	};
+
+	if(status){
+		filter.status = status;
+	}
 
 	if (from) {
 		filter.createdAt = { gte: new Date(from) };
@@ -141,25 +103,100 @@ export async function getTransactionByFilter(formData: FormData): Promise<ITrans
 		filter.createdAt = { ...filter.createdAt, lte: new Date(to) };
 	}
 	
-	const transactions = await prisma.transaction.findMany({
-		where: filter,
-		select:{
-			status: true,
-			transactionHistory:{
-				where: {
-					transactionStatus:  transactionStatus,
+	try {
+		const transactions = await prisma.transaction.findMany({
+			where: filter,
+			select:{
+				status: true,
+				createdAt: true,
+				amountInCurrency: true,
+				amountInCurrencyFee: true,
+			}
+		});
+
+		return transactions;
+	} catch (error) {
+		console.error("Error fetching transactions by filter:", error);
+		throw new Error("Failed to fetch transactions by filter");
+	}
+}
+
+export async function getTransactionByPeriod(period: StatisticPeriod): Promise<StatisticTransaction[]> {
+	const user = await checkUser();
+
+	const startDate = new Date();
+	const endDate = new Date();
+
+	switch (period) {
+		case StatisticPeriod.Today:
+			startDate.setHours(0, 0, 0, 0);
+			endDate.setHours(23, 59, 59, 999);
+			break;
+		case StatisticPeriod.Yesterday:
+			startDate.setDate(startDate.getDate() - 1);
+			startDate.setHours(0, 0, 0, 0);
+			endDate.setDate(endDate.getDate() - 1);
+			endDate.setHours(23, 59, 59, 999);
+			break;
+		case StatisticPeriod.Weekly:
+			startDate.setDate(startDate.getDate() - 7);
+			startDate.setHours(0, 0, 0, 0);
+			endDate.setHours(23, 59, 59, 999);
+			break;
+		case StatisticPeriod.Monthly:
+			startDate.setDate(startDate.getDate() - 30);
+			startDate.setHours(0, 0, 0, 0);
+			endDate.setHours(23, 59, 59, 999);
+			break;
+		case StatisticPeriod.All:
+			startDate.setFullYear(2020); // Arbitrary start date
+			startDate.setHours(0, 0, 0, 0);
+			endDate.setHours(23, 59, 59, 999);
+			break;
+		default:
+			throw new Error("Invalid period specified");
+	}
+
+	console.log("Fetching transactions from", startDate.toLocaleString(), "to", endDate.toLocaleString());
+
+	try {
+		const transactions = await prisma.transaction.findMany({
+			where: {
+				userId: user.id,
+				createdAt: {
+					gte: startDate,
+					lte: endDate
 				},
-				select: {
-					createdAt: true,
-					transactionStatus: true,
-					amountInCurrency: true,
-					amountInCurrencyFee: true,
+				NOT: {
+					status: 'PENDING'
+				}
+			},
+			select: {
+				id: true,
+				num: true,
+				initiator: true,
+				status: true,
+				type: true,
+				amount: true,
+				amountInCurrency: true,
+				amountInCurrencyFee: true,
+				rate: true,
+				createdAt: true,
+				requisites: {
+					select: {
+						bankName: true,
+						currency: true,
+						paymentMethod: true
+					}
 				},
 			}
-		}
-	});
+		});
 
-	return transactions;
+		return transactions;
+	} catch (error) {
+		console.error("Error fetching transactions by period:", error);
+		throw new Error("Failed to fetch transactions by period");
+	}
 }
 
 async function checkUser(): Promise<{ id: number, balance: number, fundsBlocked: number }> {

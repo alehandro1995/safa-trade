@@ -17,7 +17,7 @@ type DealsItemProps = {
 	transaction: ITransaction;
 	index: number;
 	deals: ITransaction[];
-	setDeals: React.Dispatch<React.SetStateAction<ITransaction[]>>;
+	setDeals: React.Dispatch<React.SetStateAction<ITransaction[] | null>>;
 };
 
 function DealsItem({transaction, index, deals, setDeals} : DealsItemProps) {
@@ -41,10 +41,6 @@ function DealsItem({transaction, index, deals, setDeals} : DealsItemProps) {
 			});
 	}
 
-	const rate = transaction.transactionHistory[0]?.rate || 0 as number;
-	const amountInCurrency = Number(transaction.transactionHistory[0]?.amountInCurrency) || 0;
-	const updatedAt = transaction.transactionHistory[0]?.createdAt || ''
-
 	return ( 
 		<div className={`grid grid-cols-6 items-center p-2 ${index % 2 !== 0 ? "bg-transparent" : "bg-emerald-100"}`}>
 			<div className="flex items-center gap-x-1">
@@ -56,12 +52,12 @@ function DealsItem({transaction, index, deals, setDeals} : DealsItemProps) {
 			</div>
 			<div>
 				<p>{transaction.status.toUpperCase()}</p>
-				<p className="text-green-700 text-xs">{new Date(updatedAt).toLocaleString()}</p>
+				<p className="text-green-700 text-xs">{new Date(transaction.createdAt).toLocaleString()}</p>
 			</div>
-			<div className="text-lg font-semibold">{rate}</div>
+			<div className="text-lg font-semibold">{transaction.rate}</div>
 			<div>
 				<p className="text-lg font-semibold">{transaction.amount} {transaction.requisites.currency.symbol}</p>
-				<p className="text-green-700 text-xs">{amountInCurrency.toFixed(6)} USDT</p>
+				<p className="text-green-700 text-xs">{transaction.amountInCurrency.toFixed(6)} USDT</p>
 			</div>
 			<div className="flex flex-col">
 				<span className="font-semibold ellipsis pr-2">
@@ -117,7 +113,7 @@ function DealsItem({transaction, index, deals, setDeals} : DealsItemProps) {
 						</div>
 						<div className="w-full grid grid-cols-2 bg-emerald-100 p-2">
 							<div className="font-semibold">Курс</div>
-							<div>{transaction.transactionHistory[0].rate}</div>
+							<div>{transaction.rate}</div>
 						</div>
 						<div className="w-full grid grid-cols-2 p-2">
 							<div className="font-semibold">Сумма поступлений</div>
@@ -128,14 +124,14 @@ function DealsItem({transaction, index, deals, setDeals} : DealsItemProps) {
 							<div className={`${transaction.status === "COMPLETED" ? "text-green-800" : "text-red-800"} font-semibold`}>
 								{transaction.status === "COMPLETED" && '-'}
 								{transaction.status === "CANCELED" && '+'}
-								{transaction.transactionHistory[0].amountInCurrency.toFixed(6)} USDT
+								{transaction.amountInCurrency.toFixed(6)} USDT
 							</div>
 						</div>
 						<div className="w-full grid grid-cols-2 p-2">
 							<div className="font-semibold">Сумма вознаграждения</div>
 							<div className={`text-green-800 font-semibold ${transaction.status === "CANCELED" && "line-through"}`}>
 								{transaction.status === "COMPLETED" && '+'}
-								{transaction.transactionHistory[0].amountInCurrencyFee.toFixed(4)} USDT
+								{transaction.amountInCurrencyFee.toFixed(4)} USDT
 							</div>
 						</div>
 						<div className="w-full grid grid-cols-2 bg-emerald-100 p-2">
@@ -145,25 +141,6 @@ function DealsItem({transaction, index, deals, setDeals} : DealsItemProps) {
 								<p className="text-green-700 text-xs">{transaction.requisites.cardOwner}</p>
 							</div>
 						</div>
-					</div>
-					<h4 className="font-semibold text-center my-2">История</h4>
-					<div className="w-full  flex flex-col px-2">
-						<div className="w-full grid grid-cols-3 gap-2 border-b border-border font-semibold p-2">
-							<div>Дата</div>
-							<div>Статус</div>
-							<div>Инициатор</div>
-						</div>
-						{transaction.transactionHistory.length !== 0 && [...transaction.transactionHistory]
-							.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-							.map((history, index) => (
-								<div
-									key={index}
-									className={`w-full grid grid-cols-3 gap-2 p-2 text-sm ${index % 2 === 0 ? "bg-emerald-100" : ""}`}>
-									<div>{new Date(history.createdAt).toLocaleString()}</div>
-									<div>{history.transactionStatus}</div>
-									<div>{history.initiator}</div>
-								</div>
-						))}
 					</div>
 					</PopoverContent>
 				</Popover>

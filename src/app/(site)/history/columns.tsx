@@ -57,22 +57,6 @@ export const columns: ColumnDef<HistoryColumns>[] = [
 		},
 	},
 	{
-		accessorKey: "balanceBefore",
-		header: "Баланс до",
-		cell: ({ row }) => {
-			const balance = row.getValue("balanceBefore") as number;
-			return `${balance.toFixed(6)} USDT`;
-		},
-	},
-	{
-		accessorKey: "balanceAfter",
-		header: "Баланс после",
-		cell: ({ row }) => {
-			const balance = row.getValue("balanceAfter") as number;
-			return `${balance.toFixed(6)} USDT`;
-		},
-	},
-	{
     id: "actions",
     cell: ({ row }) => {
 			

@@ -1,8 +1,10 @@
 "use client";
 import { useState } from "react";
-import Image from "next/image";
-//import { IoMdClose } from "react-icons/io";
-import { MdOutlineFileCopy, MdFileCopy, MdOutlineFileDownload } from "react-icons/md";
+import { 
+	MdOutlineFileCopy, 
+	MdFileCopy, 
+	MdOutlineFileDownload 
+} from "react-icons/md";
 
 import { Button } from "@/components/ui/button";
 import {

@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import type { IUserInfo } from "@/types/User";
-import type { TransactionType } from "../../generated/prisma";
+import type { TransactionType } from "@/generated/prisma";
 import { deleteSession } from "@/lib/session";
 
 export async function createUser(prevState: any, formData: FormData): Promise<{ message: 'success' | 'error' }> {
@@ -86,33 +86,25 @@ export async function updateUser(prevState: any, formData: FormData): Promise<{ 
 	return { message: "success" };
 }
 
-export async function changePassword(prevState: any, formData: FormData): Promise<{ message: string }> {
+export async function changePassword(password: string): Promise<void> {
 	const cookie = await cookies();
 	const email = cookie.get("email")?.value;
 	if (!email) {
 		throw new Error("User not authenticated");
 	}
 
-	const password = formData.get("password") as string;
-	const confirm = formData.get("confirm") as string;
-	if (!password || !confirm) {
-		throw new Error("Passwords do not match");
+	try{
+		await prisma.user.update({
+			where: {
+				email: email
+			},
+			data: {
+				password: password
+			}
+		});
+	} catch (error) {
+		throw new Error("Error changing password");
 	}
-
-	if (password !== confirm) {
-		return { message: "error" };
-	}
-
-	await prisma.user.update({
-		where: {
-			email: email
-		},
-		data: {
-			password: password
-		}
-	});
-
-	return { message: "success" };
 }
 
 export async function changeUserStatus(type: TransactionType, status:boolean): Promise<void> {

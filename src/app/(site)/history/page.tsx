@@ -25,8 +25,6 @@ async function getData(id:number): Promise<HistoryColumns[]> {
 			amount: true,
 			status: true,
 			type: true,
-			balanceBefore: true,
-			balanceAfter: true,
 			requisites: {
 				select: {
 					currency: {
@@ -48,8 +46,6 @@ async function getData(id:number): Promise<HistoryColumns[]> {
 		amount: `${item.amount} ${item.requisites.currency.symbol}`,
 		type: item.type,
 		status: item.status,
-		balanceBefore: item.balanceBefore,
-		balanceAfter: item.balanceAfter,
 	}));
 }
 

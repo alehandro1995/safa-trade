@@ -1,7 +1,7 @@
 import {prisma} from "@/client";
 import { cookies } from "next/headers";
 
-export async function GET(request: Request) {
+export async function GET() {
   const cookieStore = await cookies();
   const email = cookieStore.get('email')?.value;
   if (!email){

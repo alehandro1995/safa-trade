@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useActionState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner"
-import { createUser } from "../../../../actions/userAction";
+import { createUser } from "@/actions/userAction";
 import Link from "next/link";
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"

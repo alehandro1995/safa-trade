@@ -18,7 +18,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import type { User } from "../../../../../../generated/prisma";
+import type { User } from "@/generated/prisma";
 
 const initialState = {
   message: '',

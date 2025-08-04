@@ -1,12 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -34,7 +28,6 @@ model User {
 	transactions  		Transaction[]
 	paymentStatus 		Boolean   		@default(false)
 	receiveStatus 		Boolean   		@default(false)
-	paymentSettings 	PaymentSetting?
 }
 
 model Device {
@@ -90,42 +83,16 @@ model Transaction {
 	num									String    						@unique(map: "Transaction_number_key")
 	user        				User      						@relation(fields: [userId], references: [id])
 	userId      				Int
-	balanceBefore 			Float
-	balanceAfter  			Float
 	requisites  				requisites 						@relation(fields: [requisitesId], references: [id])
 	requisitesId				Int
 	amount      				Float
-	type        				TransactionType			
-	status   						TransactionStatus 		@default(PENDING)
-	createdAt   	  	 	DateTime  						@default(now())
-	transactionHistory 	TransactionHistory[]
-}
-
-model TransactionHistory {
-	id 									Int       				@id @default(autoincrement())
- 	transaction 				Transaction 			@relation(fields: [transactionId], references: [id])
- 	transactionId 			Int
-	transactionStatus 	TransactionStatus
 	initiator	 					TransactionInitiator
 	rate 								Float
 	amountInCurrency 		Float
 	amountInCurrencyFee Float
- 	createdAt   				DateTime  				@default(now())
-	description 				String?
-}
-
-model PaymentSetting {
-	id          		Int       			@id @default(autoincrement())
-	user        		User      			@relation(fields: [userId], references: [id])
-	userId      		Int							@unique(map: "PaymentSetting_userId_key")
-	minOrder				Int?
-	maxOrder				Int?
-	currency    		currency  			@relation(fields: [currencyId], references: [id])
-	currencyId  		Int 						@unique(map: "PaymentSetting_currencyId_key")
-	paymentMethod 	payment_method  @relation(fields: [paymentId], references: [id])
-	paymentId   		Int							@unique(map: "PaymentSetting_paymentId_key")	
-	bankName   			bank_name 			@relation(fields: [bankId], references: [id])
-	bankId      		Int							@unique(map: "PaymentSetting_bankId_key")
+	type        				TransactionType			
+	status   						TransactionStatus 		@default(PENDING)
+	createdAt   	  	 	DateTime  						@default(now())
 }
 
 model currency {
@@ -134,7 +101,6 @@ model currency {
 	symbol      String
 	createdAt   DateTime  @default(now())
 	requisites  requisites[]
-	paymentSettings PaymentSetting?
 }
 
 model bank_name {
@@ -143,7 +109,6 @@ model bank_name {
 	icon				String?
 	createdAt   DateTime  @default(now())
 	requisites    requisites[]
-	paymentSettings PaymentSetting?
 }
 
 model payment_method {
@@ -152,7 +117,6 @@ model payment_method {
 	icon				String?
 	createdAt   DateTime  @default(now())
 	requisites    requisites[]
-	paymentSettings PaymentSetting?
 }
 
 enum user_role {
@@ -180,5 +144,3 @@ enum TransactionInitiator {
 	MERCHANT
 	SYSTEM
 }
-
-

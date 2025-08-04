@@ -36,7 +36,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 
-import type { Group } from "../../../generated/prisma";
+import type { Group } from "@/generated/prisma";
 
 const formSchema = z.object({
   name: z.string().min(3, "Минимум 3 символа").max(10, "Максимум 10 символов"),

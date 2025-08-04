@@ -8,7 +8,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { IoLogOutOutline, IoPersonSharp } from "react-icons/io5";
 import { changeUserStatus, logout } from "@/actions/userAction";
-import type { TransactionType } from "../../generated/prisma";
+import type { TransactionType } from "@/generated/prisma";
 
 import {
   DropdownMenu,
@@ -20,16 +20,26 @@ import {
 
 type UserMenuProps = {
 	email: string;
+	balance: number;
 	paymentStatus: boolean;
 	receiveStatus: boolean;
 };
 
-function UserMenu({email, paymentStatus, receiveStatus}: UserMenuProps) {
+function UserMenu({email, balance,paymentStatus, receiveStatus}: UserMenuProps) {
 	const [receive, setReceive] = useState(receiveStatus);
 	const [payment, setPayment] = useState(paymentStatus);
 
 	const handleSwitchChange = (checked: boolean, data: "receive" | "payment") => {
 		const type = data.toUpperCase() as TransactionType;
+		if(balance <= 0 && type === "RECEIVE") {
+			toast.error("Недостаточно средств для приёма");
+			return;
+		}
+
+		if(type === "PAYMENT") {
+			toast.error("Выплаты временно отключены");
+			return;
+		}
 		
 		changeUserStatus(type, checked)
 			.then(() => {

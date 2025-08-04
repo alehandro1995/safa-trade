@@ -1,5 +1,5 @@
 import { prisma } from "@/client";
-import RequisitesForm from "@/components//requisites/RequisitesForm";
+import RequisitesForm from "@/components/requisites/RequisitesForm";
 import { cookies } from 'next/headers';
 import { SlashIcon } from "lucide-react"
 

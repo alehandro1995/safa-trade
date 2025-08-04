@@ -1,22 +1,19 @@
 import Link from "next/link";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { getTransactionByPeriod } from "@/actions/transaction";
+import { StatisticPeriod } from "@/types/Statistic";
+import { MdFormatListBulleted } from "react-icons/md";
+import { Skeleton } from "@/components/ui/skeleton";
+import { MainChart } from "@/components/MainChart";
+import MainInfo from "@/components/MainInfo";
 import ModalReceive from "@/components/modals/ModalReceive";
 import ModalSend from "@/components/modals/ModalSend";
 import MainBalance from "@/components/MainBalance";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { MyChart } from "@/components/MyChart";
 
-import { MdFormatListBulleted } from "react-icons/md";
-import { 
-	IoCard, 
-	IoCash, 
-	IoTrendingUp, 
-	IoAnalyticsOutline 
-} from "react-icons/io5";
+export default async function Home() {
+	const transactions = await getTransactionByPeriod(StatisticPeriod.All);
 
-
-export default function Home() {
-	
   return (
 		<div className="flex flex-col container mx-auto px-5 py-10">
 			<h1 className="text-3xl font-bold mb-5">Главная</h1>
@@ -38,47 +35,23 @@ export default function Home() {
 					</div>
 				</Card>
 				<Card className="grid grid-cols-1 sm:grid-cols-2">
-					<div className="bg-green-700 p-5 rounded-lg text-emerald-100 flex items-center justify-between">
-						<div>
-							<h4 className="text-lg font-semibold">Оборот</h4>
-							<h5 className="text-3xl font-extrabold">40 000$</h5>
-						</div>
-						<div className="w-12 h-12 flex items-center justify-center bg-green-800 rounded-full">
-							<IoCard className="text-emerald-100 text-3xl" />
-						</div>
-					</div>
-					<div className="bg-green-700 p-5 rounded-lg text-emerald-100 flex items-center justify-between">
-						<div>
-							<h4 className="text-lg font-semibold">Доход</h4>
-							<h5 className="text-3xl font-extrabold">5 000$</h5>
-						</div>
-						<div className="w-12 h-12 flex items-center justify-center bg-green-800 rounded-full">
-							<IoCash className="text-emerald-100 text-3xl" />
-						</div>
-					</div>
-					<div className="bg-green-700 p-5 rounded-lg text-emerald-100 flex items-center justify-between">
-						<div>
-							<h4 className="text-lg font-semibold">Сделки</h4>
-							<h5 className="text-3xl font-extrabold">600</h5>
-						</div>
-						<div className="w-12 h-12 flex items-center justify-center bg-green-800 rounded-full">
-							<IoTrendingUp className="text-emerald-100 text-3xl" />
-						</div>
-					</div>
-					<div className="bg-green-700 p-5 rounded-lg text-emerald-100 flex items-center justify-between">
-						<div>
-							<h4 className="text-lg font-semibold">Конверсия</h4>
-							<h5 className="text-3xl font-extrabold">68%</h5>
-						</div>
-						<div className="w-12 h-12 flex items-center justify-center bg-green-800 rounded-full">
-							<IoAnalyticsOutline className="text-emerald-100 text-3xl" />
-						</div>
-					</div>
+					<MainInfo transactions={transactions} />
 				</Card>
 			</div>
 			<Card className="mt-5 h-full lg:h-[480px]">
-				<MyChart />
+				<MainChart transactions={transactions} />
 			</Card>
 		</div>
   );
+}
+
+function LoadingInfo(){
+	return (
+		<>
+			<Skeleton className="h-24 w-full" />
+			<Skeleton className="h-24 w-full" />
+			<Skeleton className="h-24 w-full" />
+			<Skeleton className="h-24 w-full" />
+		</>
+	);
 }

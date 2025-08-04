@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { CheckIcon, ChevronsUpDownIcon } from "lucide-react"
-import type { currency } from "../../../generated/prisma"
+import type { currency } from "@/generated/prisma"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"

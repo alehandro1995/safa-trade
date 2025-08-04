@@ -1,5 +1,6 @@
 "use client"
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner"
 import { FaTelegramPlane } from "react-icons/fa";
 import { Button } from "@/components/ui/button"
@@ -26,7 +27,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import type { User } from "../../generated/prisma";
+import type { User } from "@/generated/prisma";
 const formSchema = z.object({
 	password: z.string().min(5, "Минимум 5 символов").max(20, "Максимум 20 символов"),
 	confirm: z.string().min(1, "Обязательное поле"),
@@ -36,6 +37,7 @@ const formSchema = z.object({
 });
 
 function PasswordForm({user}: {user: User}) {
+	const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
 			resolver: zodResolver(formSchema),
 			defaultValues: {
@@ -58,7 +60,7 @@ function PasswordForm({user}: {user: User}) {
   
       if (response.ok) {
 				toast.success("Пароль успешно создан!")
-        location.href = "/login";
+        router.push("/login");
       } else {
         throw new Error("Ошибка сервера");
       }

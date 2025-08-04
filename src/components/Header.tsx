@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useUserStore } from "@/store/user";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { usePathname } from "next/navigation";
@@ -7,12 +7,16 @@ import Link from "next/link";
 import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Toggle } from "@/components/ui/toggle"
 import { BsFillBellFill } from "react-icons/bs";
-import { TbPointFilled } from "react-icons/tb";
 import { IoLogOutOutline } from "react-icons/io5";
 import { IoIosMenu } from "react-icons/io";
 import { getUser, logout } from "@/actions/userAction";
+
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 import {
   Sheet,
@@ -22,7 +26,7 @@ import {
   SheetTitle,
   SheetTrigger,
 	SheetClose
-} from "@/components/ui/sheet"
+} from "@/components/ui/sheet";
 
 import { Button } from "./ui/button";
 import MobileToggle from "./MobileToggle";
@@ -36,6 +40,8 @@ function Header() {
 	const pathname = usePathname();
 	if (!pathname) return null;
 
+	const [isLoading, setIsLoading] = useState(true);
+
 	useEffect(() => {
 		getUser().then((user) => {
 			if (!user) {
@@ -46,8 +52,18 @@ function Header() {
 		}).catch((error) => {
 			console.error("Error fetching user:", error);
 			window.location.href = "/login";
+		}).finally(() => {
+			setIsLoading(false);
 		});
 	}, []);
+	
+	if (isLoading) {
+		return (
+			<div className="flex items-center h-12 lg:h-16 bg-emerald-200 text-green-900 shadow-md px-2 lg:px-4">
+				<Skeleton className="h-8 w-full lg:h-10" />
+			</div>
+		);
+	}	
 
 	return ( 
 		<div className="flex items-center h-12 lg:h-16 bg-emerald-200 text-green-900 shadow-md px-2 lg:px-4">
@@ -75,10 +91,14 @@ function Header() {
 							<SheetTitle>{user ? user.email : <Skeleton className="h-4 w-1/2" />}</SheetTitle>
 						</SheetHeader>
 						{ user
-							? <MobileToggle	paymentStatus={user.paymentStatus} receiveStatus={user.receiveStatus}/>
+							? <MobileToggle	
+									paymentStatus={user.paymentStatus} 
+									receiveStatus={user.receiveStatus}
+									balance={user.balance}
+								/>
 							: <div className="pl-4">
-								<Skeleton className="h-4 w-1/2 mb-2" />
-								<Skeleton className="h-4 w-1/2 mb-2" />
+									<Skeleton className="h-4 w-1/2 mb-2" />
+									<Skeleton className="h-4 w-1/2 mb-2" />
 								</div>
 						}
 						{LinkList(isMobile, pathname)}
@@ -98,13 +118,21 @@ function Header() {
 				:
 				<div className="w-fit flex items-center gap-x-4">
 					{user
-						? <UserMenu email={user.email} paymentStatus={user.paymentStatus} receiveStatus={user.receiveStatus} />
+						? <UserMenu 
+								email={user.email} 
+								balance={user.balance}
+								paymentStatus={user.paymentStatus} 
+								receiveStatus={user.receiveStatus} 
+							/>
 						: <Skeleton className="h-10 w-10 rounded-full" />
 					}
-					<Toggle className="relative">
-						<TbPointFilled className="absolute left-0 top-0 text-yellow-300" />
-						<BsFillBellFill className="text-2xl text-green-900" />
-					</Toggle>
+					<Popover>
+  					<PopoverTrigger className="relative cursor-pointer">
+							{/*<TbPointFilled className="absolute left-0 top-0 text-yellow-300" />*/}
+							<BsFillBellFill className="text-2xl text-green-900" />
+						</PopoverTrigger>
+  					<PopoverContent>Нет новых уведомлений</PopoverContent>
+					</Popover>
 				</div>
 			}
 		</div>

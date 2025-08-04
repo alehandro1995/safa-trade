@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/client";
 import { cookies } from "next/headers";
-import { TransactionStatus, TransactionType } from "../../../../generated/prisma";
+import { TransactionStatus, TransactionType } from "@/generated/prisma";
 
 export async function GET(request: Request) {
   const cookie = await cookies();
@@ -55,20 +55,6 @@ export async function GET(request: Request) {
 							name: true,
 						},
 					},
-				},
-			},
-			transactionHistory: {
-				select: {
-					id: true,
-					rate: true,
-					amountInCurrency: true,
-					amountInCurrencyFee: true,
-					transactionStatus: true,
-					createdAt: true,
-					initiator: true,
-				},
-				orderBy: {
-					createdAt: "desc",
 				},
 			},
 		},

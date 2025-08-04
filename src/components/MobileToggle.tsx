@@ -3,20 +3,31 @@ import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { changeUserStatus } from "@/actions/userAction";
-import type { TransactionType } from "../../generated/prisma";
+import type { TransactionType } from "@/generated/prisma";
 
 type MobileToggleProps = {
 	paymentStatus: boolean;
 	receiveStatus: boolean;
+	balance: number;
 };
 
-function MobileToggle({paymentStatus, receiveStatus}: MobileToggleProps) {
+function MobileToggle({paymentStatus, receiveStatus, balance}: MobileToggleProps) {
 	const [receive, setReceive] = useState(receiveStatus);
 	const [payment, setPayment] = useState(paymentStatus);
 
 	const handleSwitchChange = (checked: boolean, data: "receive" | "payment") => {
 		const type = data.toUpperCase() as TransactionType;
-		console.log(`Switch changed: ${type} is now ${checked}`);
+		if(balance <= 0 && type === "RECEIVE") {
+			toast.error("Недостаточно средств для приёма");
+			return;
+		}
+
+		if(type === "PAYMENT") {
+			toast.error("Выплаты временно отключены");
+			return;
+		}
+
+		//console.log(`Switch changed: ${type} is now ${checked}`);
 		changeUserStatus(type, checked)
 			.then(() => {
 				if (data === "receive") {

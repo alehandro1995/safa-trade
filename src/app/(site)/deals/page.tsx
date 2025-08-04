@@ -17,6 +17,8 @@ import {
 	TabsTrigger 
 } from "@/components/ui/tabs"
 
+//import { DealStatus } from "@/types/Transaction";
+
 function Page() {
 	return ( 
 		<section className="p-6">

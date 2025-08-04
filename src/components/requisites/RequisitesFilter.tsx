@@ -30,7 +30,7 @@ import type {
 	bank_name, 
 	payment_method, 
 	Group 
-} from "../../../generated/prisma";
+} from "@/generated/prisma";
 
 type RequisitesFilterProps = {
   currencies: currency[];

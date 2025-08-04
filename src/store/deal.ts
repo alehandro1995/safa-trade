@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { TransactionStatus, TransactionType } from '../../generated/prisma';
+import { TransactionStatus, TransactionType } from '@/generated/prisma';
 
 interface DealState {
 	status: TransactionStatus;

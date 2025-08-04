@@ -5,7 +5,7 @@ import type {
 	payment_method, 
 	Group,
 	Device 
-} from "../../generated/prisma";
+} from "@/generated/prisma";
 
 export interface IRequisites extends requisites {
 	bankName: bank_name;

@@ -1,7 +1,7 @@
 import { prisma } from '@/client'
 
 const EMAIL = 'test@mail.ru';
-const AMOUNT = 5120; 
+const AMOUNT = 7000; 
 const CURRENCY = 'RUB';
 const CURRENT_RATE = 89.24
 const LIMIT = parseInt(process.env.NEXT_PUBLIC_LIMIT || '500');
@@ -61,17 +61,10 @@ async function main() {
 					requisitesId: requisite.id,
 					amount: AMOUNT,
 					type: 'RECEIVE',
-					balanceBefore: user.balance,
-					balanceAfter: user.balance - transactionAmount,
-					transactionHistory:{ 
-						create: {
-							transactionStatus: 'PENDING',
-							initiator: 'MERCHANT',
-							rate: CURRENT_RATE,
-							amountInCurrency: transactionAmount,
-							amountInCurrencyFee: transactionAmount / 100 * user.payInGambling,
-						}
-					}
+					initiator: 'MERCHANT',
+					rate: CURRENT_RATE,
+					amountInCurrency: transactionAmount,
+					amountInCurrencyFee: transactionAmount / 100 * user.payInGambling,
 				}
 			});
 

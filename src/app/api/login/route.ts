@@ -1,8 +1,8 @@
 import 'server-only'
 import { cookies } from 'next/headers'
 import {prisma} from "@/client";
-import type { User } from "../../../../generated/prisma";
-import { encrypt } from "../../../lib/session";
+import type { User } from "@/generated/prisma";
+import { encrypt } from "@/lib/session";
 
 export async function POST(request: Request) {
 	

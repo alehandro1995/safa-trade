@@ -1,6 +1,6 @@
 "use server";
 import {prisma} from "@/client";
-import {Device} from "../../generated/prisma";
+import {Device} from "@/generated/prisma";
 import { randomBytes } from "crypto";
 import { cookies } from "next/headers";
 
