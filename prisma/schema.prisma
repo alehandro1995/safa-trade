@@ -93,6 +93,7 @@ model Transaction {
 	type        				TransactionType			
 	status   						TransactionStatus 		@default(PENDING)
 	createdAt   	  	 	DateTime  						@default(now())
+	updatedAt   	  	 	DateTime  						@updatedAt
 }
 
 model currency {

@@ -21,29 +21,22 @@ async function getData(id:number): Promise<HistoryColumns[]> {
 		},
 		select: {
 			id: true,
-			createdAt: true,
-			amount: true,
+			num: true,
+			updatedAt: true,
 			status: true,
 			type: true,
-			requisites: {
-				select: {
-					currency: {
-						select: {
-							symbol: true,
-						},
-					},
-				},
-			},
+			amountInCurrency: true,
 		},
 		orderBy: {
-			createdAt: "desc",
+			updatedAt: "desc",
 		},
 	});
 
 	return data.map((item) => ({
 		id: item.id,
-		createdAt: item.createdAt,
-		amount: `${item.amount} ${item.requisites.currency.symbol}`,
+		num: item.num,
+		updatedAt: item.updatedAt,
+		amount: item.amountInCurrency,
 		type: item.type,
 		status: item.status,
 	}));

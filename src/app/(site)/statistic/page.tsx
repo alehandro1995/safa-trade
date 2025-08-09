@@ -32,7 +32,7 @@ function Page() {
 					</BreadcrumbItem>
 				</BreadcrumbList>
 			</Breadcrumb>
-			<Tabs defaultValue={StatisticPeriod.Weekly} className="w-full mt-4">
+			<Tabs defaultValue={StatisticPeriod.Today} className="w-full mt-4">
 				<TabsList className=" bg-emerald-100">
 					<TabsTrigger value={StatisticPeriod.Today} className="font-oswald tracking-wide cursor-pointer">Сегодня</TabsTrigger>
 					<TabsTrigger value={StatisticPeriod.Yesterday} className="font-oswald tracking-wide cursor-pointer">Вчера</TabsTrigger>

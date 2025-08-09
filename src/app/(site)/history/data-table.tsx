@@ -1,8 +1,9 @@
 "use client"
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import DataTablePagination from "@/components/history/DataTablePagination";
-import FromDate from "@/components/history/FromDate";
+
 import {
   ColumnDef,
 	ColumnFiltersState,
@@ -14,6 +15,17 @@ import {
 	getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
+
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/popover"
+
+import { Calendar as CalendarIcon } from "lucide-react"
+import { format } from "date-fns";
+import { ru } from "date-fns/locale"
+import { Calendar } from "@/components/ui/calendar";
 
 import {
   Select,
@@ -43,40 +55,59 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
-	const [fromDate, setFromDate] = useState<Date>();
 	const [sorting, setSorting] = useState<SortingState>([]);
-	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+	const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+
   const table = useReactTable({
-    data,
-    columns,
+	data,
+	columns,
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
 		onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
+		getSortedRowModel: getSortedRowModel(),
 		onColumnFiltersChange: setColumnFilters,
 		getFilteredRowModel: getFilteredRowModel(),
 		state: {
-      sorting,
-      columnFilters,
-    },
-		globalFilterFn: 'auto',
-		filterFns: {
-			dateFrom: (row, columnId, filterValue: Date | undefined) => {
-				if (!filterValue) return true
-				const rowDate = new Date(row.getValue(columnId))
-				return rowDate >= filterValue
-			}
-		},
+	  	sorting,
+	  	columnFilters,
+		}
   });
-
-	useEffect(() => {
-		table.getColumn("createdAt")?.setFilterValue(fromDate)
-	}, [fromDate]);
 
   return (
 		<div className="min-w-[1280px]">
 			<div className="flex items-center gap-4 py-4">
-				<FromDate value={fromDate} onChange={setFromDate} />
+				<Input
+          placeholder="Поиск по номеру"
+          value={(table.getColumn("num")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("num")?.setFilterValue(event.target.value)
+          }
+          className="w-48"
+        />
+				<Popover>
+					<PopoverTrigger asChild>
+						<Button variant="outline" className="w-[200px] justify-start text-left">
+							<CalendarIcon className="mr-2 h-4 w-4" />
+							{selectedDate 
+								? format(selectedDate, 'PP', { locale: ru }) 
+								: <span className="text-muted-foreground">Выберите дату</span>}
+						</Button>
+					</PopoverTrigger>
+					<PopoverContent className="w-auto p-0">
+						<Calendar
+							mode="single"
+							selected={selectedDate}
+							onSelect={(date: Date) => {
+								const formattedDate = format(date, "dd.MM.yyyy");
+								setSelectedDate(date)
+								table.getColumn('updatedAt')?.setFilterValue(formattedDate)
+							}}
+							locale={ru}
+							required
+						/>
+					</PopoverContent>
+				</Popover>
 				<Select
 					value={(table.getColumn("type")?.getFilterValue() as string) ?? ""}
 					onValueChange={(value) =>
@@ -117,9 +148,11 @@ export function DataTable<TData, TValue>({
 					className="ml-auto"
 					size="sm"
 					onClick={() => {
-						table.getColumn("type")?.setFilterValue("");
-						table.getColumn("status")?.setFilterValue("");
-						setFromDate(undefined);
+						table.getColumn("type")?.setFilterValue(undefined);
+						table.getColumn("status")?.setFilterValue(undefined);
+          	table.getColumn('updatedAt')?.setFilterValue(undefined);
+						table.getColumn("num")?.setFilterValue(undefined);
+						setSelectedDate(undefined);
 					}}
 				>
 					Сбросить фильтры

@@ -1,10 +1,9 @@
 import Link from "next/link";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { getTransactionByPeriod } from "@/actions/transaction";
+import { getTransactionByPeriod } from "@/actions/transactionAction";
 import { StatisticPeriod } from "@/types/Statistic";
 import { MdFormatListBulleted } from "react-icons/md";
-import { Skeleton } from "@/components/ui/skeleton";
 import { MainChart } from "@/components/MainChart";
 import MainInfo from "@/components/MainInfo";
 import ModalReceive from "@/components/modals/ModalReceive";
@@ -43,15 +42,4 @@ export default async function Home() {
 			</Card>
 		</div>
   );
-}
-
-function LoadingInfo(){
-	return (
-		<>
-			<Skeleton className="h-24 w-full" />
-			<Skeleton className="h-24 w-full" />
-			<Skeleton className="h-24 w-full" />
-			<Skeleton className="h-24 w-full" />
-		</>
-	);
 }

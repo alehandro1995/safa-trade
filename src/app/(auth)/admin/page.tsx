@@ -21,10 +21,11 @@ export default async function AdminPage() {
   }
   
   return (
-    <div className="container mx-auto">
-      <Link href="/admin/create">
-				<Button className="absolute top-5 right-5">Создать пользователя</Button>
+    <div className="container mx-auto flex flex-col">
+      <Link href="/admin/create" className="mt-10 self-end">
+				<Button>Создать пользователя</Button>
 			</Link>
+			//TODO: Add pagination and date filter
       <DataTable columns={columns} data={users} />
     </div>
   );

@@ -15,8 +15,12 @@ import {
 } from "@/components/ui/popover"
 
 export const columns: ColumnDef<HistoryColumns>[] = [
+	{
+		accessorKey: "num",
+		header: "Номер",
+	},
   {
-    accessorKey: "createdAt",
+    accessorKey: "updatedAt",
     header: ({ column }) => {
       return (
         <Button
@@ -28,11 +32,22 @@ export const columns: ColumnDef<HistoryColumns>[] = [
         </Button>
       )
     },
-		cell: ({ row }) => format(new Date(row.getValue("createdAt")), "dd.MM.yyyy"),
-  },
+		cell: ({ row }) => format(new Date(row.getValue("updatedAt")), "dd.MM.yyyy"),
+		filterFn: (row, columnId, filterValue) => {
+			const value = format(new Date(row.getValue(columnId)), "dd.MM.yyyy");
+			return (value === filterValue) || (filterValue === "");
+		},
+	},
   {
     accessorKey: "amount",
     header: "Сумма",
+		cell: ({ row }) => {
+			const amount = row.getValue("amount") as number;
+			return amount.toLocaleString("en-US", {
+				style: "currency",
+				currency: "USD",
+			});
+		},
   },
 	{
 		accessorKey: "type",
@@ -67,24 +82,26 @@ export const columns: ColumnDef<HistoryColumns>[] = [
 			}
 
       return (
-        <Popover>
-					<PopoverTrigger asChild>
-						<Button
-							size="sm"
-							variant="outline"	
-							className="w-fit ml-auto">
-							<BsList className="text-2xl text-foreground" />		
-						</Button>
-					</PopoverTrigger>
-					<PopoverContent 
-						side="left"
-						align="end"
-						avoidCollisions={true}
-						className="w-[600px]"
-						>
-						<HistoryPopover id={id} />
-					</PopoverContent>
-				</Popover>
+				<div className="w-full flex items-center justify-end pr-5">
+					<Popover>
+						<PopoverTrigger asChild>
+							<Button
+								size="sm"
+								variant="outline"	
+								className="w-fit ml-auto">
+								<BsList className="text-2xl text-foreground" />		
+							</Button>
+						</PopoverTrigger>
+						<PopoverContent 
+							side="left"
+							align="end"
+							avoidCollisions={true}
+							className="w-[600px]"
+							>
+							<HistoryPopover id={id} />
+						</PopoverContent>
+					</Popover>
+				</div>
       )
     },
   },

@@ -49,7 +49,7 @@ function MainInfo({transactions}: {transactions: StatisticTransaction[]}) {
 				<div>
 					<h4 className="text-lg font-semibold">Оборот</h4>
 					<h5 className="text-3xl font-extrabold">
-						{totalTurnover === 0 ? "0.00$" : totalTurnover.toFixed(2) + "$"}
+						{totalTurnover.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
 					</h5>
 				</div>
 				<div className="w-12 h-12 flex items-center justify-center bg-green-800 rounded-full">
@@ -60,7 +60,7 @@ function MainInfo({transactions}: {transactions: StatisticTransaction[]}) {
 				<div>
 					<h4 className="text-lg font-semibold">Доход</h4>
 					<h5 className="text-3xl font-extrabold">
-						{totalIncome === 0 ? "0.00$" : totalIncome.toFixed(2) + "$"}
+						{totalIncome.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
 					</h5>
 				</div>
 				<div className="w-12 h-12 flex items-center justify-center bg-green-800 rounded-full">
@@ -70,9 +70,7 @@ function MainInfo({transactions}: {transactions: StatisticTransaction[]}) {
 			<div className="bg-green-700 p-5 rounded-lg text-emerald-100 flex items-center justify-between">
 				<div>
 					<h4 className="text-lg font-semibold">Сделки</h4>
-					<h5 className="text-3xl font-extrabold">
-						{totalDeals === 0 ? "0" : totalDeals}
-					</h5>
+					<h5 className="text-3xl font-extrabold">{totalDeals}</h5>
 				</div>
 				<div className="w-12 h-12 flex items-center justify-center bg-green-800 rounded-full">
 					<IoTrendingUp className="text-emerald-100 text-3xl" />
@@ -82,7 +80,7 @@ function MainInfo({transactions}: {transactions: StatisticTransaction[]}) {
 				<div>
 					<h4 className="text-lg font-semibold">Средний чек</h4>
 					<h5 className="text-3xl font-extrabold">
-						{conversionRate === 0 ? "0.00$" : conversionRate.toFixed(2) + "$"}
+						{conversionRate.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
 					</h5>
 				</div>
 				<div className="w-12 h-12 flex items-center justify-center bg-green-800 rounded-full">

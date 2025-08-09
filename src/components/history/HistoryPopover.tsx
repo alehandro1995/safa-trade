@@ -2,16 +2,17 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getTransactionById } from "@/actions/transaction";
-import type { TransactionWithHistory } from "@/types/History";
+import { getTransactionById } from "@/actions/transactionAction";
+import type { HistoryTransaction } from "@/types/History";
 
 function HistoryPopover({id}: {id: number}) {
-	const [transaction, setTransaction] = useState<TransactionWithHistory | null>(null);
+	const [transaction, setTransaction] = useState<HistoryTransaction | null>(null);
 
 	useEffect(() => {
 		getTransactionById(id)
 			.then(fetchedTransaction => {
 				setTransaction(fetchedTransaction);
+				console.log("Fetched transaction:", fetchedTransaction);
 			})
 			.catch(error => {
 				console.error("Error fetching transaction:", error);
@@ -24,8 +25,8 @@ function HistoryPopover({id}: {id: number}) {
 	}, [id]);
 
 	if (!transaction) {
-		return <div className="flex flex-col w-full h-[560px] gap-5 p-6">
-			{Array.from({ length: 12 }).map((_, idx) => (
+		return <div className="flex flex-col w-full h-[380px] gap-5 p-6">
+			{Array.from({ length: 8 }).map((_, idx) => (
 				<Skeleton key={idx} className="w-full h-6" />
 			))}
 		</div>;
@@ -45,7 +46,7 @@ function HistoryPopover({id}: {id: number}) {
 				</div>
 				<div className="w-full grid grid-cols-2 bg-emerald-100 p-2">
 					<div className="font-semibold">Дата</div>
-					<div>{new Date(transaction.createdAt).toLocaleString()}</div>
+					<div>{new Date(transaction.updatedAt).toLocaleString("ru-RU")}</div>
 				</div>
 				<div className="w-full grid grid-cols-2 p-2">
 					<div className="font-semibold">Статус</div>

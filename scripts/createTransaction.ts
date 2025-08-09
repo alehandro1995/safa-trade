@@ -1,7 +1,7 @@
 import { prisma } from '@/client'
 
 const EMAIL = 'test@mail.ru';
-const AMOUNT = 7000; 
+const AMOUNT = 3000; 
 const CURRENCY = 'RUB';
 const CURRENT_RATE = 89.24
 const LIMIT = parseInt(process.env.NEXT_PUBLIC_LIMIT || '500');
@@ -20,12 +20,15 @@ async function main() {
 		return;
 	}
 
-	const transactionAmount = AMOUNT / CURRENT_RATE; //57.373375
+	let transactionAmount = AMOUNT / CURRENT_RATE; //57.373375
+	let transactionFee = transactionAmount / 100 * user.payInGambling;
 	if ((user.balance - LIMIT) < transactionAmount) {
 		console.error(`User with email ${EMAIL} has insufficient operational balance.`);
 		return;
 	}
 
+	transactionAmount = Math.round(transactionAmount * 1000000) / 1000000; // 57.373375 -> 57.373375
+	transactionFee = Math.round(transactionFee * 1000000) / 1000000; // 0.57373375 -> 0.57373375
 	const requisites = await prisma.requisites.findMany({
 		where: { 
 			userId: user.id, 
@@ -64,15 +67,19 @@ async function main() {
 					initiator: 'MERCHANT',
 					rate: CURRENT_RATE,
 					amountInCurrency: transactionAmount,
-					amountInCurrencyFee: transactionAmount / 100 * user.payInGambling,
+					amountInCurrencyFee: transactionFee,
 				}
 			});
 
 			await tx.user.update({
 				where: { id: user.id },
 				data: {
-					balance: user.balance - transactionAmount,
-					fundsBlocked: user.fundsBlocked + transactionAmount
+					balance: {
+						decrement: transactionAmount,
+					},
+					fundsBlocked: {
+						increment: transactionAmount,
+					},
 				}
 			});
 		});

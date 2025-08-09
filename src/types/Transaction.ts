@@ -1,14 +1,21 @@
-import { TransactionStatus } from "@/generated/prisma";
+import { 
+	TransactionStatus, 
+	TransactionType,
+	TransactionInitiator
+} from "@/generated/prisma";
 
 export interface ITransaction {
 	id: number;
 	num: string;
 	amount: number;
 	status: TransactionStatus;
+	type: TransactionType;
 	rate: number;
 	amountInCurrency: number;
 	amountInCurrencyFee: number;
+	initiator: TransactionInitiator;
 	createdAt: Date;
+	updatedAt: Date;
 	requisites: {
 		card: string;
 		cardOwner: string;
@@ -26,6 +33,7 @@ export type TransactionFilter = {
 	from?: Date;
 	to?: Date;
 	status?: TransactionStatus;
+	type?: TransactionType;
 }
 
 export enum DealStatus {

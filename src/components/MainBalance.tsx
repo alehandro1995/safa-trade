@@ -28,7 +28,7 @@ function MainBalance() {
 					setCurrentBalance(balance - LIMIT);
 					setInsuranceLimit(LIMIT);
 				}else{
-					setCurrentBalance(balance);
+					setCurrentBalance(0);
 					setInsuranceLimit(balance);
 				}	
 				
@@ -49,7 +49,7 @@ function MainBalance() {
 				<div className="text-xl font-semibold">
 					{isLoading
 						? <Skeleton className="h-8 w-1/2 mb-2" /> 
-						: <span>{currentBalance > 0 ? currentBalance.toFixed(8) : '0.00000000'} USDT</span>
+						: <span>{currentBalance > 0 ? currentBalance.toFixed(6) : '0.00000000'} USDT</span>
 					}
 				</div>
 				<div className="text-sm text-red-500">
@@ -61,7 +61,7 @@ function MainBalance() {
 				<h4 className="text-sm text-blue-600">
 					{isLoading
 						? <Skeleton className="h-4 w-1/2 mb-2" />
-						: <span>Заблокировано: {fundsBlocked.toFixed(20)} USDT</span>
+						: <span>Заблокировано: {fundsBlocked.toFixed(6)} USDT</span>
 					}
 				</h4>
 			</div>

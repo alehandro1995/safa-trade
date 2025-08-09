@@ -29,6 +29,6 @@ export interface StatisticTransaction {
 	amount: number,
 	amountInCurrency: number,
 	amountInCurrencyFee: number,
-	createdAt:Date,
+	updatedAt: Date,
 	requisites: StatisticRequisites,
 }

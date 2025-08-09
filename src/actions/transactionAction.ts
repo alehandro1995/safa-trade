@@ -2,13 +2,13 @@
 import {prisma} from "@/client";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";;
-import { ITransactionByFilter, TransactionFilter } from "@/types/Transaction";
-import { TransactionWithHistory } from "@/types/History";
+import { ITransaction, TransactionFilter } from "@/types/Transaction";
 import { StatisticPeriod, StatisticTransaction } from "@/types/Statistic";
+import { HistoryTransaction } from "@/types/History";
 
 export async function completeTransaction(id: number): Promise<void> {
 	try {
-		const user = await checkUser();
+		await checkUser();
 
 		await prisma.$transaction(async (tx) => {
 			// Обновляем статус транзакции
@@ -16,15 +16,19 @@ export async function completeTransaction(id: number): Promise<void> {
 				where: { id },
 				data: { 
 					status: 'COMPLETED',
-					initiator: 'TREADER'
+					initiator: 'TREADER',
 				},
 			});
 
 			await tx.user.update({
-				where: { id: user.id },
+				where: { id: transaction.userId },
 				data: {
-					balance: user.balance + transaction.amountInCurrencyFee,
-					fundsBlocked: user.fundsBlocked - transaction.amountInCurrency
+					balance: {
+						increment: transaction.amountInCurrencyFee,
+					},
+					fundsBlocked: {
+						decrement: transaction.amountInCurrency,
+					}
 				}
 			});
 		});
@@ -39,7 +43,7 @@ export async function completeTransaction(id: number): Promise<void> {
 	}
 }
 
-export async function getTransactionById(id: number): Promise<TransactionWithHistory> {
+export async function getTransactionById(id: number): Promise<HistoryTransaction | null> {
 	await checkUser();
 
 	const transaction = await prisma.transaction.findUnique({
@@ -49,10 +53,8 @@ export async function getTransactionById(id: number): Promise<TransactionWithHis
 		select:{
 			id: true,
 			num: true,
-			userId: true,
-			requisitesId: true,
 			status: true,
-			createdAt: true,
+			updatedAt: true,
 			type: true,
 			amount: true,
 			initiator: true,
@@ -81,15 +83,20 @@ export async function getTransactionById(id: number): Promise<TransactionWithHis
 	return transaction;
 }
 
-export async function getTransactionByFilter(data: TransactionFilter): Promise<ITransactionByFilter[]> {
+export async function getTransactionByFilter(data: TransactionFilter): Promise<ITransaction[]> {
 	const user = await checkUser();
 	const from = data.from;
 	const to = data.to;
 	const status = data.status;
+	const type = data.type;
 
 	const filter: any = {
 		userId: user.id,
 	};
+
+	if (type) {
+		filter.type = type;
+	}
 
 	if(status){
 		filter.status = status;
@@ -106,11 +113,39 @@ export async function getTransactionByFilter(data: TransactionFilter): Promise<I
 	try {
 		const transactions = await prisma.transaction.findMany({
 			where: filter,
-			select:{
+			select: {
+				id: true,
+				num: true,
+				amount: true,
+				rate: true,
 				status: true,
+				type: true,
+				initiator: true,
 				createdAt: true,
+				updatedAt: true,
 				amountInCurrency: true,
 				amountInCurrencyFee: true,
+				requisites: {
+					select: {
+						cardOwner: true,
+						card: true,
+						currency: {
+							select: {
+								symbol: true
+							}
+						},
+						paymentMethod: {
+							select: {
+								name: true
+							}
+						},
+						bankName: {
+							select: {
+								name: true
+							}
+						}
+					}
+				}
 			}
 		});
 
@@ -181,7 +216,7 @@ export async function getTransactionByPeriod(period: StatisticPeriod): Promise<S
 				amountInCurrency: true,
 				amountInCurrencyFee: true,
 				rate: true,
-				createdAt: true,
+				updatedAt: true,
 				requisites: {
 					select: {
 						bankName: true,

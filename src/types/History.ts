@@ -3,39 +3,18 @@ import {
 	Transaction 
 } from "@/generated/prisma";
 
-export interface IHistoryFilter {
-	totalCount: number;
-	history: HistoryType[];
-}
-
-export type HistoryFilter  = {
-	order?: string;
-	from?: string;
-	to?: string;
-	type?: TransactionType;
-};
-
-export type HistoryType = {
-	id: number,
-	createdAt: Date,
-	type: TransactionType,
-	amount: number,
-	requisites: {
-		currency: {
-			symbol: string
-		}
-	}
-}
+type History = Pick<Transaction, "id" | "num" | "status" | "updatedAt" | "type" | "amount" | "initiator" | "rate" | "amountInCurrency" | "amountInCurrencyFee">;
 
 export type HistoryColumns = {
 	id: number,
-	createdAt: Date,
-	amount: string,
+	num: string,
+	updatedAt: Date,
+	amount: number,
 	type: TransactionType,
 	status: string,
 }
 
-export interface TransactionWithHistory extends Transaction {
+export interface HistoryTransaction extends History {
 	requisites: {
 		id: number;
 		cardOwner: string;

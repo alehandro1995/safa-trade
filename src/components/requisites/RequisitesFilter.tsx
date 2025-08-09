@@ -139,7 +139,7 @@ function RequisitesFilter(
 											<SelectLabel>Валюты</SelectLabel>
 												{currencies.map((currency) => (
 													<SelectItem key={currency.id} value={currency.id.toString()}>
-														{currency.name}
+														{currency.name} - {currency.symbol}
 													</SelectItem>
 												))}
 											</SelectGroup>

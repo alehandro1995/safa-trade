@@ -57,7 +57,7 @@ type ConversionChartProps = {
 function ConversionChart({data, period}: ConversionChartProps) {
 
 	return ( 
-		<Card className="col-span-3 p-4">
+		<Card className="col-span-4 p-4">
 			<CardHeader className="flex flex-col gap-2">
 				<CardTitle>Конверсия</CardTitle>
 				<CardDescription className="text-sm text-gray-500">

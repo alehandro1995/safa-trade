@@ -43,7 +43,7 @@ export function MainChart({transactions}: {transactions: StatisticTransaction[]}
 
 		const dayMap = new Map<string, { completed: number; canceled: number }>();
 		transactions.forEach((tx) => {
-			const date = new Date(tx.createdAt);
+			const date = new Date(tx.updatedAt);
 			const day = date.toLocaleDateString("ru-RU", { day: "2-digit", month: "2-digit" });
 			//console.log("Day:", day);
 			if(tx.status === "COMPLETED") {

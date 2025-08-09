@@ -1,9 +1,10 @@
 "use client"
 import { ColumnDef } from "@tanstack/react-table"
-import { MoreHorizontal } from "lucide-react"
+import { MoreHorizontal, CirclePlus } from "lucide-react"
 import { deleteUser } from "@/actions/userAction"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
+import { addBalance } from "@/actions/userAction"
 
 import {
   DropdownMenu,
@@ -24,7 +25,20 @@ import {
   AlertDialogDescription,
   AlertDialogCancel,
   AlertDialogAction,
-} from "@/components/ui/alert-dialog"
+} from "@/components/ui/alert-dialog";
+
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
  
 export type User = {
 	id: number;
@@ -65,6 +79,47 @@ export const columns: ColumnDef<User>[] = [
 	{
 		accessorKey: "balance",
 		header: "Balance",
+		cell: ({ row }) => {
+			const balance = row.getValue("balance") as number;
+			const localizedBalance = balance.toLocaleString("en-US", {
+				style: "currency",
+				currency: "USD",
+			});
+
+			return (
+				<div className="flex items-center gap-2">
+					<span>{localizedBalance}</span>
+					<Dialog>
+						<DialogTrigger asChild>
+							<Button variant="ghost">
+								<CirclePlus className="h-4 w-4" />
+							</Button>
+						</DialogTrigger>
+						<DialogContent className="sm:max-w-[425px]">
+							<DialogHeader>
+								<DialogTitle>Пополнить баланс</DialogTitle>
+								<DialogDescription>
+									Введите сумму для пополнения баланса пользователя {row.getValue("email")}.
+								</DialogDescription>
+							</DialogHeader>
+							<form action={addBalance}>
+								<div className="grid gap-3 mb-5">
+									<Label htmlFor="amount">Amount</Label>
+									<Input id="amount" name="amount" autoFocus={true} />
+									<input type="hidden" name="email" value={row.getValue("email")} />
+								</div>
+								<DialogFooter>
+									<DialogClose asChild>
+										<Button variant="secondary">Cancel</Button>
+									</DialogClose>
+									<Button type="submit">Save changes</Button>
+								</DialogFooter>
+							</form>
+						</DialogContent>
+					</Dialog>
+				</div>
+			);
+		},
 	},
 	{
     id: "actions",

@@ -1,6 +1,7 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import DealsItem from "./DealsItem";
+import { getTransactionByFilter } from "@/actions/transactionAction";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ITransaction } from "@/types/Transaction";
 import { 
@@ -16,29 +17,25 @@ type DealsListProps = {
 function DealsList({status, type}: DealsListProps) {
   const [deals, setDeals] = useState<ITransaction[]|null>(null);
 
-  const fetchDeals = async () => {
-    const params = new URLSearchParams({ status, type });
-    
-		try{
-			const res = await fetch(`/api/deals?${params.toString()}`);
-			const data = await res.json();
-			const transactions: ITransaction[] = data.transactions || [];
-			transactions.sort((a, b) => {
-				const dateA = new Date(a.createdAt);
-				const dateB = new Date(b.createdAt);
-				return dateB.getTime() - dateA.getTime();
-			});
-			setDeals(transactions);
-		} catch (error) {
-			console.error("Error fetching deals:", error);
-			setDeals([]);
-		}
-  };
-
   useEffect(() => {
-    fetchDeals();
+    const twelveHoursAgo = new Date(Date.now() - 12 * 60 * 60 * 1000);
+		getTransactionByFilter({ status, type, from: twelveHoursAgo })
+			.then(fetchedDeals => {
+				fetchedDeals.sort((a, b) => {
+				const dateA = new Date(a.updatedAt);
+				const dateB = new Date(b.updatedAt);
+				return dateB.getTime() - dateA.getTime();
+				});
+				setDeals(fetchedDeals);
+			})
+			.catch(error => {
+				console.error("Error fetching deals:", error);
+				setDeals([]);
+			});
+
   }, [status, type]);
 
+	console.log("Deals fetched:", deals);
   if (deals === null) {
 		return (
 			<div className="flex flex-col gap-y-5 w-full">

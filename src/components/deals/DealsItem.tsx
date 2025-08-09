@@ -2,8 +2,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { HiOutlineArrowDownCircle } from "react-icons/hi2";
+import { MdOutlineFileCopy, MdFileCopy } from "react-icons/md";
 import { BsList } from "react-icons/bs";
-import { completeTransaction } from "@/actions/transaction";
+import { completeTransaction } from "@/actions/transactionAction";
 import { ITransaction } from "@/types/Transaction";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -21,8 +22,20 @@ type DealsItemProps = {
 };
 
 function DealsItem({transaction, index, deals, setDeals} : DealsItemProps) {
-	const [pending, setPending] = useState(false);
 	const router = useRouter();
+	const [pending, setPending] = useState(false);
+	const [copied, setCopied] = useState(false);
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(transaction.num);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy: ", err);
+    }
+  };
+
 	const changeStatus = async (id: number) => {
 		setPending(true);
 		completeTransaction(id)
@@ -46,24 +59,33 @@ function DealsItem({transaction, index, deals, setDeals} : DealsItemProps) {
 			<div className="flex items-center gap-x-1">
 				<HiOutlineArrowDownCircle className="text-green-700 text-lg" />
 				<div>
-					<p>{transaction.num}</p>
+					<div className="flex items-center gap-x-2 relative">
+						<span>{transaction.num}</span>
+						{copied && <div className="absolute -top-4 right-12 text-[10px] text-yellow-500">Скопировано</div>}
+						{!copied 
+							?
+							<MdOutlineFileCopy onClick={copyToClipboard} className="text-[16px] text-green-700/90 hover:text-green-700 cursor-pointer"/>
+							:
+							<MdFileCopy onClick={copyToClipboard} className="text-[16px] text-green-700/90 hover:text-green-700 cursor-pointer"/>
+						}
+					</div>
 					<p className="text-green-700 text-xs">{new Date(transaction.createdAt).toLocaleString()}</p>
 				</div>
 			</div>
 			<div>
 				<p>{transaction.status.toUpperCase()}</p>
-				<p className="text-green-700 text-xs">{new Date(transaction.createdAt).toLocaleString()}</p>
+				<p className="text-green-700 text-xs">{new Date(transaction.updatedAt).toLocaleString()}</p>
 			</div>
 			<div className="text-lg font-semibold">{transaction.rate}</div>
 			<div>
 				<p className="text-lg font-semibold">{transaction.amount} {transaction.requisites.currency.symbol}</p>
-				<p className="text-green-700 text-xs">{transaction.amountInCurrency.toFixed(6)} USDT</p>
+				<p className="text-green-700 text-xs">{transaction.amountInCurrency.toFixed(4)} USDT</p>
 			</div>
 			<div className="flex flex-col">
-				<span className="font-semibold ellipsis pr-2">
+				<span className="font-semibold text-xs pr-2">
 					{transaction.requisites.bankName.name} - {transaction.requisites.paymentMethod.name}
 				</span>
-				<span className="text-xs">{transaction.requisites.card}</span>
+				<span className="font-bold">{transaction.requisites.card}</span>
 				<span className="text-green-700 text-[12px]">{transaction.requisites.cardOwner}</span>
 			</div>
 			{ transaction.status === "PENDING" 
@@ -95,13 +117,17 @@ function DealsItem({transaction, index, deals, setDeals} : DealsItemProps) {
 					>
 					<h4 className="text-lg font-semibold text-center mb-2">Торговая сделка</h4>			
 					<div className="w-full flex flex-col text-sm px-2">
-						<div className="w-full grid grid-cols-2 bg-emerald-100 p-2">
+						<div className="w-full grid grid-cols-2 p-2">
 							<div className="font-semibold">ID</div>
 							<div>{transaction.num}</div>
 						</div>
+						<div className="w-full grid grid-cols-2 bg-emerald-100 p-2">
+							<div className="font-semibold">Инициатор</div>
+							<div>{transaction.initiator}</div>
+						</div>
 						<div className="w-full grid grid-cols-2 p-2">
 							<div className="font-semibold">Тип</div>
-							<div>Приём</div>
+							<div>{transaction.type}</div>
 						</div>
 						<div className="w-full grid grid-cols-2 bg-emerald-100 p-2">
 							<div className="font-semibold">Дата</div>
@@ -124,7 +150,7 @@ function DealsItem({transaction, index, deals, setDeals} : DealsItemProps) {
 							<div className={`${transaction.status === "COMPLETED" ? "text-green-800" : "text-red-800"} font-semibold`}>
 								{transaction.status === "COMPLETED" && '-'}
 								{transaction.status === "CANCELED" && '+'}
-								{transaction.amountInCurrency.toFixed(6)} USDT
+								{transaction.amountInCurrency.toFixed(4)} USDT
 							</div>
 						</div>
 						<div className="w-full grid grid-cols-2 p-2">

@@ -131,12 +131,101 @@ export async function changeUserStatus(type: TransactionType, status:boolean): P
 	}
 }
 
+export async function withdraw(amount: number): Promise<void> {
+	const cookie = await cookies();
+	const email = cookie.get("email")?.value;
+	if (!email) {
+		throw new Error("User not authenticated");
+	}
+
+	try {
+		await prisma.user.update({
+			where: { email },
+			data: {
+				balance: {
+					decrement: amount
+				}
+			}
+		});
+	} catch (error) {
+		console.error("Error withdrawing funds:", error);
+		throw new Error("Error withdrawing funds, please try again later.");
+	}
+}
+
+export async function addBalance(formData: FormData): Promise<void> {
+	const email = formData.get("email") as string;
+	if (!email) {
+		throw new Error("Email is required to add balance");
+	}
+	const amount = formData.get("amount") as string;
+	if (!amount) {
+		throw new Error("Amount is required");
+	}
+
+	console.log(`Adding balance: ${amount} to user: ${email}`);
+
+	try {
+		await prisma.user.update({
+			where: { email },
+			data: {
+				balance: {
+					increment: parseFloat(amount)
+				}
+			}
+		});
+	} catch (error) {
+		console.error("Error adding balance:", error);
+		throw new Error("Error adding balance, please try again later.");
+	}
+
+	revalidatePath("/admin");
+	redirect("/admin");
+}
+
 export async function deleteUser(email: string): Promise<void> {
 	try {
-		await prisma.user.delete({
+		
+		const user = await prisma.user.findFirst({
 			where: {
 				email: email
 			}
+		});
+
+		if (!user) {
+			throw new Error("User not found");
+		}
+
+		prisma.$transaction(async (tx) => {
+			await tx.device.deleteMany({
+				where: {
+					userId: user.id
+				}
+			});
+
+			await tx.group.deleteMany({
+				where: {
+					userId: user.id
+				}
+			});
+
+			await tx.requisites.deleteMany({
+				where: {
+					userId: user.id
+				}
+			});
+
+			await tx.transaction.deleteMany({
+				where: {
+					userId: user.id
+				}
+			});
+
+			await tx.user.delete({
+				where: {
+					id: user.id
+				}
+			});
 		});
 	} catch (error) {
 		throw new Error("Error deleting user: " + error);
