@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import { useForm } from "react-hook-form"
-import { useRouter } from 'next/navigation';
 import { FaTelegramPlane } from "react-icons/fa";
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -34,7 +33,6 @@ const formSchema = z.object({
 })
 
 function Page() {
-	const router = useRouter();
   const [apiError, setApiError] = useState<boolean>(false);
   
 	const form = useForm<z.infer<typeof formSchema>>({
@@ -63,7 +61,7 @@ function Page() {
           return;
         }
 
-        router.push("/");
+        window.location.href = "/";
       } else {	
 				console.log(response);
         if (response.status === 400) {
