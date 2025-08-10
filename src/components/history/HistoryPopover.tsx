@@ -78,6 +78,9 @@ function HistoryPopover({id}: {id: number}) {
 				<div className="w-full grid grid-cols-2 bg-emerald-100 p-2">
 					<div className="font-semibold">Реквизиты</div>
 					<div>
+						<p className="text-xs font-semibold">
+							{transaction.requisites.bankName.name} - {transaction.requisites.paymentMethod.name}
+						</p>
 						<p>{transaction.requisites.card}</p>
 						<p className="text-green-700 text-xs">{transaction.requisites.cardOwner}</p>
 					</div>

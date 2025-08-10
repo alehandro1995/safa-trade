@@ -21,7 +21,7 @@ import {
 
 function Page() {
 	return ( 
-		<section className="p-6">
+		<section className="p-6 overflow-auto">
 			<Breadcrumb>
 				<BreadcrumbList>
 					<BreadcrumbItem>
@@ -35,7 +35,7 @@ function Page() {
 					</BreadcrumbItem>
 				</BreadcrumbList>
 			</Breadcrumb>
-			<Tabs defaultValue="pending" className="w-full mt-4">
+			<Tabs defaultValue="pending" className="min-w-[1200px] w-full mt-4">
 				<TabsList className=" bg-emerald-100">
 					<TabsTrigger value="pending" className="font-oswald tracking-wide cursor-pointer">Активные</TabsTrigger>
 					<TabsTrigger value="completed" className="font-oswald tracking-wide cursor-pointer">Завершенные</TabsTrigger>
@@ -43,22 +43,22 @@ function Page() {
 					<TabsTrigger value="disputed" className="font-oswald tracking-wide cursor-pointer">Споры</TabsTrigger>
 				</TabsList>
 				<TabsContent value="pending">
-					<Card className="mt-5 p-5 overflow-auto">
+					<Card className="mt-5 p-5">
 						<DealsList status="PENDING" type="RECEIVE" />
 					</Card>
 				</TabsContent>
 				<TabsContent value="completed">
-					<Card className="mt-5 p-5 overflow-auto">
+					<Card className="mt-5 p-5">
 						<DealsList status="COMPLETED" type="RECEIVE" />
 					</Card>
 				</TabsContent>
 				<TabsContent value="canceled">
-					<Card className="mt-5 p-5 overflow-auto">
+					<Card className="mt-5 p-5">
 						<DealsList status="CANCELED" type="RECEIVE" />
 					</Card>
 				</TabsContent>
 				<TabsContent value="disputed">
-					<Card className="mt-5 p-5 overflow-auto">
+					<Card className="mt-5 p-5">
 						<DealsList status="DISPUTED" type="RECEIVE" />
 					</Card>
 				</TabsContent>

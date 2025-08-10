@@ -50,7 +50,7 @@ export default async function Page() {
 	});
  
   return (
-    <section className="p-6">
+    <section className="p-6 overflow-auto">
 			<Breadcrumb>
 				<BreadcrumbList>
 					<BreadcrumbItem>
@@ -70,7 +70,7 @@ export default async function Page() {
 				paymentMethod={paymentMethod}
 				groups={groups}
 			/>
-      <Card className="mt-5 p-5 overflow-auto">
+      <Card className="mt-5 p-5 min-w-[1240px]">
 				<div className="flex gap-5 mb-5">
 					<AddDeviceModal devices={devices} />
 					<AddGroupModal groups={groups} />

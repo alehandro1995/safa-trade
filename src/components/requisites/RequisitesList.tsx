@@ -19,7 +19,7 @@ function RequisitesList() {
 	}
 
 	return ( 
-		<div className="flex flex-col min-w-[1480px]">
+		<div className="w-full flex flex-col">
 			<div className="grid grid-cols-12 items-end border-b-[1px] border-border p-4 font-semibold">
 				<div>Устройство</div>
 				<div className="col-span-2">Реквизиты</div>

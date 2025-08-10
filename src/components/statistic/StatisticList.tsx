@@ -52,18 +52,18 @@ function StatisticList({period}: {period: StatisticPeriod}) {
 		<div>
 			{transactions.length < 10 
 				? 
-				<div className="grid grid-cols-6 gap-4 mt-5">
-					<Card className="col-span-3 min-h-[300px] justify-center items-center">
-						<CardHeader className="w-full text-center">
-							<CardTitle>Нет данных для отображения</CardTitle>
-						</CardHeader>
-					</Card>
-					<Card className="col-span-3 min-h-[300px] justify-center items-center">
+				<div className="grid grid-cols-6 lg:grid-cols-8 gap-4 mt-5">
+					<Card className="col-span-6 min-h-[300px] justify-center items-center">
 						<CardHeader className="w-full text-center">
 							<CardTitle>Нет данных для отображения</CardTitle>
 						</CardHeader>
 					</Card>
 					<Card className="col-span-2 min-h-[300px] justify-center items-center">
+						<CardHeader className="w-full text-center">
+							<CardTitle>Нет данных для отображения</CardTitle>
+						</CardHeader>
+					</Card>
+					<Card className="col-span-4 min-h-[300px] justify-center items-center">
 						<CardHeader className="w-full text-center">
 							<CardTitle>Нет данных для отображения</CardTitle>
 						</CardHeader>

@@ -20,7 +20,7 @@ import { StatisticPeriod } from "@/types/Statistic";
 
 function Page() {
 	return ( 
-		<section className="p-6">
+		<section className="p-6 overflow-auto">
 			<Breadcrumb>
 				<BreadcrumbList>
 					<BreadcrumbItem>
@@ -32,7 +32,7 @@ function Page() {
 					</BreadcrumbItem>
 				</BreadcrumbList>
 			</Breadcrumb>
-			<Tabs defaultValue={StatisticPeriod.Today} className="w-full mt-4">
+			<Tabs defaultValue={StatisticPeriod.Today} className="min-w-[900px] w-full mt-4">
 				<TabsList className=" bg-emerald-100">
 					<TabsTrigger value={StatisticPeriod.Today} className="font-oswald tracking-wide cursor-pointer">Сегодня</TabsTrigger>
 					<TabsTrigger value={StatisticPeriod.Yesterday} className="font-oswald tracking-wide cursor-pointer">Вчера</TabsTrigger>

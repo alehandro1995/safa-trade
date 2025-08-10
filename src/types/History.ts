@@ -22,5 +22,11 @@ export interface HistoryTransaction extends History {
 		currency: {
 			symbol: string;
 		};
+		paymentMethod: {
+			name: string;
+		};
+		bankName: {
+			name: string;
+		};
 	};
 }

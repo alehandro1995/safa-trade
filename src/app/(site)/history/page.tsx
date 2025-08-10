@@ -63,7 +63,7 @@ async function Page() {
 	const data = await getData(user.id);
 
 	return ( 
-		<section className="p-6">
+		<section className="p-6 overflow-auto">
 			<Breadcrumb>
 				<BreadcrumbList>
 					<BreadcrumbItem>
@@ -75,7 +75,7 @@ async function Page() {
 					</BreadcrumbItem>
 				</BreadcrumbList>
 			</Breadcrumb>
-			<div className="py-10 overflow-auto">
+			<div className="py-10 min-w-[900px]">
       	<DataTable columns={columns} data={data} />
     	</div>
 		</section>

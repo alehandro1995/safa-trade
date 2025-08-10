@@ -59,8 +59,10 @@ function Header() {
 	
 	if (isLoading) {
 		return (
-			<div className="flex items-center h-12 lg:h-16 bg-emerald-200 text-green-900 shadow-md px-2 lg:px-4">
-				<Skeleton className="h-8 w-full lg:h-10" />
+			<div className="grid grid-cols-12 gap-x-2 items-center h-12 lg:h-16 bg-emerald-200 text-green-900 shadow-md px-2 lg:px-4">
+				<Skeleton className="col-span-2 h-8" />
+				<Skeleton className="col-span-8 h-8" />
+				<Skeleton className="col-span-2 h-8" />
 			</div>
 		);
 	}	

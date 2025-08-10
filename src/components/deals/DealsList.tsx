@@ -48,7 +48,7 @@ function DealsList({status, type}: DealsListProps) {
 	}
 
   return (
-    <div className="flex flex-col min-w-[1280px]">
+    <div className="flex flex-col">
       <div className="grid grid-cols-6 items-end border-b-[1px] border-border p-2 font-semibold">
         <div>ID/Дата</div>
         <div>Статус</div>

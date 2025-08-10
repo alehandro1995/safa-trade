@@ -70,7 +70,17 @@ export async function getTransactionById(id: number): Promise<HistoryTransaction
 						select: {
 							symbol: true
 						}
-					}
+					},
+					paymentMethod: {
+						select: {
+							name: true
+						}
+					},
+					bankName: {
+						select: {
+							name: true
+						}
+					},
 				},
 			},
 		}

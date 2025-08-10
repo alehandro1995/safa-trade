@@ -1,7 +1,7 @@
 import { prisma } from '@/client'
 
 const EMAIL = 'test@mail.ru';
-const AMOUNT = 3000; 
+const AMOUNT = 5600; 
 const CURRENCY = 'RUB';
 const CURRENT_RATE = 89.24
 const LIMIT = parseInt(process.env.NEXT_PUBLIC_LIMIT || '500');

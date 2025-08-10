@@ -117,9 +117,9 @@ function RequisitesFilter(
 
 	return ( 
 		<Form {...form}>
-			<form onSubmit={form.handleSubmit(onSubmit)}>
-			<Card className="flex flex-row items-start xl:items-center justify-between mt-5">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 xl:grid-cols-5 gap-4">
+			<form onSubmit={form.handleSubmit(onSubmit)} className="min-w-[1240px]">
+			<Card className="w-full flex flex-row items-start xl:items-center justify-between mt-5">
+        <div className="w-full flex gap-4">
 					<FormField
 						control={form.control}
 						name="currencyId"
@@ -258,7 +258,7 @@ function RequisitesFilter(
 						)}
 					/>
         </div>
-      	<div className="flex flex-col sm:flex-row gap-2">
+      	<div className="flex gap-2">
         	<Button disabled={pending} size="sm" type="submit">Применить</Button>
         	<Button onClick={resetForm} size="sm" variant="secondary" type="reset">Сбросить</Button>
       	</div>

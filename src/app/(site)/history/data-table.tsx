@@ -75,8 +75,8 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-		<div className="min-w-[1280px]">
-			<div className="flex items-center gap-4 py-4">
+		<div className="w-full">
+			<div className="w-full flex items-center gap-4 py-4">
 				<Input
           placeholder="Поиск по номеру"
           value={(table.getColumn("num")?.getFilterValue() as string) ?? ""}

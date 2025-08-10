@@ -42,7 +42,7 @@ export default function ModalReceive() {
 					<span className="text-[12px] font-semibold relative top-[2px]">Пополнить</span>
 				</Button>
 			</AlertDialogTrigger>
-			<AlertDialogContent>
+			<AlertDialogContent className="overflow-auto">
 				<AlertDialogHeader>
 					<AlertDialogTitle>Пополнение</AlertDialogTitle>
 					<AlertDialogDescription>
@@ -51,8 +51,8 @@ export default function ModalReceive() {
 				</AlertDialogHeader>
 				<div className="w-full flex flex-col items-center p-4">
 					<h4 className="text-lg mb-2">Адрес кошелька (USDT TRC20)</h4>
-					<div className="w-full h-12 flex items-center justify-center gap-x-2 bg-green-700 rounded-md">
-						<span className="text-lg text-emerald-100">{address}</span>
+					<div className="min-w-[420px] w-full h-12 flex items-center justify-center gap-x-2 bg-green-700 rounded-md">
+						<span className="text-emerald-100">{address}</span>
 						<div className="relative">
 							{copied && <div className="absolute -top-4 -left-5 text-[10px] text-yellow-300">Скопировано</div>}
 							{!copied 

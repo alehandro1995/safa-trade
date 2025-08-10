@@ -27,7 +27,7 @@ function MobileToggle({paymentStatus, receiveStatus, balance}: MobileToggleProps
 			return;
 		}
 
-		//console.log(`Switch changed: ${type} is now ${checked}`);
+		console.log(`Switch changed: ${type} is now ${checked}`);
 		changeUserStatus(type, checked)
 			.then(() => {
 				if (data === "receive") {
@@ -42,6 +42,7 @@ function MobileToggle({paymentStatus, receiveStatus, balance}: MobileToggleProps
 				toast.error("Ошибка при изменении статуса");
 			});
 	}
+	
 	return ( 
 		<div className="p-4 bg-emerald-100 w-full flex flex-col gap-y-4">
 			<div className="flex items-center space-x-2">

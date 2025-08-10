@@ -50,7 +50,8 @@ export default function Home() {
 	}
 	
   return (
-    <section className="flex flex-col items-center h-full w-full">
+    <section className="p-6 overflow-auto">
+			<div className="flex flex-col items-center h-full w-full min-w-[900px]">
 			<h1 className="text-2xl my-10">Двухфакторная аутентификация</h1>
 			<Card className="w-[800px] grid grid-cols-3">
 				<div className="flex items-center">Статус:</div>
@@ -103,6 +104,7 @@ export default function Home() {
 				</Card>
 				</form>
       </Form>
+			</div>
     </section>
   );
 }
