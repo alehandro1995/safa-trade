@@ -16,8 +16,6 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
-import AddGroupModal from "@/components/modals/AddGroupModal";
-import AddDeviceModal from "@/components/modals/AddDeviceModal";
 import RequisitesFilter from "@/components//requisites/RequisitesFilter";
  
 export default async function Page() {
@@ -71,16 +69,12 @@ export default async function Page() {
 				groups={groups}
 			/>
       <Card className="mt-5 p-5 min-w-[1240px]">
-				<div className="flex gap-5 mb-5">
-					<AddDeviceModal devices={devices} />
-					<AddGroupModal groups={groups} />
-					<Link href="/requisites/create" className="ml-auto">
-						<Button size="sm">
-							<FaPlus />
-							Добавить реквизиты
-						</Button>
-					</Link>
-				</div>
+				<Link href="/requisites/create">
+					<Button size="sm">
+						<FaPlus />
+						Добавить реквизиты
+					</Button>
+				</Link>
 				<RequisitesList />
       </Card>
     </section>

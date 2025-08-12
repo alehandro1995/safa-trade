@@ -16,11 +16,9 @@ import {
 //import { Currency } from "lucide-react"
 
 const chartData = [
-  { currency: "rub", amount: 275, fill: "var(--color-rub)" },
-  { currency: "uzs", amount: 200, fill: "var(--color-uzs)" },
-  { currency: "kzt", amount: 187, fill: "var(--color-kzt)" },
+  { currency: "rub", amount: 817, fill: "var(--color-rub)" },
   { currency: "tjs", amount: 173, fill: "var(--color-tjs)" },
-  { currency: "kgs", amount: 90, fill: "var(--color-kgs)" },
+	{ currency: "amd", amount: 50, fill: "var(--color-amd)" }
 ]
 const chartConfig = {
   amount: {
@@ -28,23 +26,15 @@ const chartConfig = {
   },
   rub: {
     label: "Российский рубль",
-    color: "var(--chart-2)",
-  },
-  uzs: {
-    label: "Узбекский сум",
     color: "var(--chart-1)",
-  },
-  kzt: {
-    label: "Казахстанский тенге",
-    color: "var(--chart-3)",
   },
   tjs: {
     label: "Таджикский сомони",
     color: "var(--chart-4)",
   },
-  kgs: {
-    label: "Киргизский сом",
-    color: "var(--chart-5)",
+  amd: {
+    label: "Армянский драм",
+    color: "var(--chart-2)",
   },
 } satisfies ChartConfig;
 

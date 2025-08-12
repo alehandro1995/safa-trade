@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import Link from "next/link"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { toast } from "sonner";
 
 import {
   Card,
@@ -57,7 +58,7 @@ function Page() {
       if (response.ok) {
         const result = await response.json();
         if (result.email === "") {
-          setApiError(true);
+          toast.error("Неверный email или пароль");
           return;
         }
 
@@ -65,7 +66,7 @@ function Page() {
       } else {	
 				console.log(response);
         if (response.status === 400) {
-          setApiError(true);
+          toast.error("Неверный email или пароль");
         }else{
           throw new Error("Ошибка сервера");
         }
@@ -84,9 +85,6 @@ function Page() {
 					<CardTitle>Войти</CardTitle>
 					<CardDescription>
 						<p>Пожалуйста, войдите в аккаунт, чтобы продолжить.</p>
-						{apiError && (
-							<p className="text-destructive mt-5">Неверный email или пароль</p>
-						)}
 					</CardDescription>
 					<CardAction className="cursor-pointer opacity-90 hover:opacity-100 transition-opacity">
 						<Link href="/">

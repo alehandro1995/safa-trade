@@ -88,11 +88,12 @@ export const columns: ColumnDef<HistoryColumns>[] = [
 							<Button
 								size="sm"
 								variant="outline"	
+								onClick={e => e.stopPropagation()}
 								className="w-fit ml-auto">
 								<BsList className="text-2xl text-foreground" />		
 							</Button>
 						</PopoverTrigger>
-						<PopoverContent 
+						<PopoverContent
 							side="left"
 							align="end"
 							avoidCollisions={true}

@@ -16,9 +16,9 @@ import {
 //import { Currency } from "lucide-react"
 
 const chartData = [
-	{ bank: "tgp", amount: 275, fill: "var(--color-tgp)" },
+	{ bank: "tgp", amount: 75, fill: "var(--color-tgp)" },
 	{ bank: "spb", amount: 200, fill: "var(--color-spb)" },
-	{ bank: "card", amount: 187, fill: "var(--color-card)" },
+	{ bank: "card", amount: 387, fill: "var(--color-card)" },
 ]
 const chartConfig = {
 	amount: {

@@ -14,19 +14,21 @@ export type HistoryColumns = {
 	status: string,
 }
 
-export interface HistoryTransaction extends History {
-	requisites: {
-		id: number;
-		cardOwner: string;
-		card: string;
-		currency: {
-			symbol: string;
-		};
-		paymentMethod: {
-			name: string;
-		};
-		bankName: {
-			name: string;
-		};
+export type HistoryRequisites = {
+	id: number;
+	cardOwner: string;
+	card: string;
+	currency: {
+		symbol: string;
 	};
+	paymentMethod: {
+		name: string;
+	};
+	bankName: {
+		name: string;
+	};
+};
+
+export interface HistoryTransaction extends History {
+	requisites: HistoryRequisites;
 }

@@ -36,7 +36,6 @@ model Device {
 	userId      	Int
 	deviceId    	String    @unique(map: "Device_deviceId_key")
 	name  				String
-	requisites    requisites[]
 }
 
 model Group {
@@ -45,17 +44,12 @@ model Group {
 	name      		String
 	user    			User     @relation(fields: [userId], references: [id])
 	userId    		Int
-	requisites    requisites[]
 }
 
 model requisites {
 	id							Int       @id @default(autoincrement())
 	user        		User      @relation(fields: [userId], references: [id])
 	userId      		Int
-	device      		Device?    @relation(fields: [deviceId], references: [id])
-	deviceId    		Int?
-	group       		Group?     @relation(fields: [groupId], references: [id])
-	groupId     		Int?
 	currency    		currency  @relation(fields: [currencyId], references: [id])
 	currencyId  		Int
 	bankName    		bank_name @relation(fields: [bankId], references: [id])

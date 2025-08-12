@@ -11,8 +11,6 @@ export interface IRequisites extends requisites {
 	bankName: bank_name;
 	currency: currency;
 	paymentMethod: payment_method;
-	group: Group | null;
-	device: Device | null;
 }
 
 export interface ICreateRequisites {
@@ -23,8 +21,6 @@ export interface ICreateRequisites {
 	cardNumber: string;
 	cardOwner: string;
 	card: string;
-	groupId?: number;
-	deviceId?: number;
 	minOrder?: number;
 	maxOrder?: number;
 	dayLimit?: number;
@@ -44,5 +40,4 @@ export interface IRequisitesFilter {
 	bankId?: number;
 	paymentId?: number;
 	status?: number;
-	groupId?: number;
 }

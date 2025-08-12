@@ -16,34 +16,34 @@ import {
 //import { Currency } from "lucide-react"
 
 const chartData = [
-	{ bank: "sber", amount: 275, fill: "var(--color-sber)" },
-	{ bank: "alfa", amount: 200, fill: "var(--color-alfa)" },
-	{ bank: "tink", amount: 187, fill: "var(--color-tink)" },
-	{ bank: "vasl", amount: 173, fill: "var(--color-vasl)" },
-	{ bank: "vtb", amount: 90, fill: "var(--color-vtb)" },
+	{ bank: "vasl", amount: 400, fill: "var(--color-vasl)" },
+	{ bank: "dcbank", amount: 350, fill: "var(--color-dcbank)" },
+	{ bank: "alif", amount: 300, fill: "var(--color-alif)" },
+	{ bank: "eschata", amount: 280, fill: "var(--color-eschata)" },
+	{ bank: "another", amount: 500, fill: "var(--color-another)" },
 ]
 const chartConfig = {
 	amount: {
 		label: "Банк",
 	},
-	sber: {
-		label: "Сбербанк",
-		color: "var(--chart-2)",
-	},
-	alfa: {
-		label: "Альфа-Банк",
-		color: "var(--chart-1)",
-	},
-	tink: {
-		label: "Тинькофф",
-		color: "var(--chart-3)",
-	},
 	vasl: {
 		label: "НБКО Васл",
+		color: "var(--chart-1)",
+	},
+	dcbank: {
+		label: "Душанбе Сити",
+		color: "var(--chart-2)",
+	},
+	alif: {
+		label: "Alif Bank",
+		color: "var(--chart-3)",
+	},
+	eschata: {
+		label: "Эсхата",
 		color: "var(--chart-4)",
 	},
-	vtb: {
-		label: "ВТБ",
+	another: {
+		label: "Другие банки",
 		color: "var(--chart-5)",
 	},
 } satisfies ChartConfig;

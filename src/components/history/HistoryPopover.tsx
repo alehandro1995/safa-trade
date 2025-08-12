@@ -31,7 +31,7 @@ function HistoryPopover({id}: {id: number}) {
 			))}
 		</div>;
 	}
-
+	
 	return ( 
 		<>
 			<h4 className="text-lg font-semibold text-center mb-2">Торговая сделка</h4>
@@ -82,7 +82,7 @@ function HistoryPopover({id}: {id: number}) {
 							{transaction.requisites.bankName.name} - {transaction.requisites.paymentMethod.name}
 						</p>
 						<p>{transaction.requisites.card}</p>
-						<p className="text-green-700 text-xs">{transaction.requisites.cardOwner}</p>
+						<p className="text-green-700 text-[10px]">{transaction.requisites.cardOwner}</p>
 					</div>
 				</div>
 			</div>

@@ -4,6 +4,14 @@ import {
 	TransactionInitiator
 } from "@/generated/prisma";
 
+type TransactionRequisites = {
+	card: string;
+	cardOwner: string;
+	currency: { symbol: string };
+	paymentMethod: { name: string };
+	bankName: { name: string };
+};
+
 export interface ITransaction {
 	id: number;
 	num: string;
@@ -16,13 +24,7 @@ export interface ITransaction {
 	initiator: TransactionInitiator;
 	createdAt: Date;
 	updatedAt: Date;
-	requisites: {
-		card: string;
-		cardOwner: string;
-		currency: { symbol: string };
-		paymentMethod: { name: string };
-		bankName: { name: string };
-	};
+	requisites: TransactionRequisites;
 }
 
 export interface ITransactionByFilter {

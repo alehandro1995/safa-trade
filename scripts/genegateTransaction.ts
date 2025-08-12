@@ -4,17 +4,17 @@ import { TransactionInitiator, TransactionStatus } from '@/generated/prisma';
 
 // === Настраиваемые параметры ===
 const EMAIL = 'test2@mail.ru';
-//const CURRENCY = 'RUB';
-//const CURRENT_RATE = 89.24
-const CURRENCY = 'TJS';
-const CURRENT_RATE = 9.25;
-const startDate = new Date(2025, 6, 31, 0, 0, 0);
-const transactionCount = 68;                      
-const minAmount = 300; 
+const CURRENCY = 'RUB';
+const CURRENT_RATE = 80.33
+//const CURRENCY = 'TJS';
+//const CURRENT_RATE = 9.36;
+const startDate = new Date(2025, 7, 5, 12, 0, 0);
+const transactionCount = 56;                      
+const minAmount = 3000; 
 
 async function main() {
   let currentDate = startDate;
-  let currentNum = 16000; // первый номер транзакции
+  let currentNum = 22800; // первый номер транзакции
 	const user = await prisma.user.findUnique({
 		where: { 
 			email: EMAIL,
@@ -30,8 +30,8 @@ async function main() {
 		let increment = Math.floor(Math.random() * 20) + 2;
 		currentNum += increment; // увеличиваем номер транзакции на случайное число от 2 до 20
     // Генерация случайной суммы с двумя десятичными знаками
-    const randomValue = Math.ceil(Math.random() * 100) * 10;
-		const amount = randomValue < minAmount ? randomValue * 10 : randomValue;
+    const randomValue = Math.ceil(Math.random() * 100) * 100;
+		let amount = randomValue < minAmount ? randomValue * 10 : randomValue;
 		if (amount < minAmount) {
 			console.warn(`Generated amount ${amount} is less than minimum ${minAmount}. With ${randomValue}`);
 			continue;
@@ -49,7 +49,13 @@ async function main() {
 				status: true,
 				currency: {
 					symbol: CURRENCY,
-				} 
+				},
+				minOrder: {
+					lte: amount,
+				},
+				maxOrder: {
+					gte: amount,
+				}
 			},
 			include: {
 				currency: true,
@@ -67,7 +73,7 @@ async function main() {
 			return;
 		}
 
-		const transactionStatus = i % 3 === 0 ? 'CANCELED' : 'COMPLETED' as TransactionStatus;
+		const transactionStatus = i % 4 === 0 ? 'CANCELED' : 'COMPLETED' as TransactionStatus;
 		const initiator = transactionStatus === 'CANCELED' ? 'SYSTEM' : 'TREADER' as TransactionInitiator;
 		try {
 			await prisma.transaction.create({

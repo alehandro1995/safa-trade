@@ -49,25 +49,12 @@ function RequisiteItem({ item, index }: { item: IRequisites; index: number }) {
 	return ( 
 		<div 
 			className={`grid grid-cols-12 items-center justify-center p-4 ${index % 2 !== 0 ? "bg-transparent" : "bg-emerald-100"}`}>
-				<div className="flex flex-col">
-					{item?.device
-						? 
-						<>
-							<span>{item.device.name}</span>
-							<span className="text-green-700 text-[12px] font-semibold">{item.device.deviceId.substr(0, 8)}</span>
-						</>
-						: "n/a"
-					}
-				</div>
-				<div className="flex flex-col col-span-2">
+				<div className="flex flex-col col-span-3">
 					<span className="font-semibold ellipsis text-sm">
 						{item?.bankName.name} - {item?.paymentMethod.name}
 					</span>
 					<span className="font-semibold ellipsis pr-2">{item.card}</span>
 					<span className="text-green-700 text-[12px]">{item.cardOwner}</span>
-				</div>
-				<div>
-					{item.group ? item.group.name : "n/a"}	
 				</div>
 				<div>{item.currency.symbol}</div>
 				<div className="flex flex-col col-span-2">
@@ -86,6 +73,9 @@ function RequisiteItem({ item, index }: { item: IRequisites; index: number }) {
 				</div>
 				<div>
 					{item.concurrentOrder ? item.concurrentOrder : "---"}
+				</div>
+				<div>
+					{item.minutesDelay ? `${item.minutesDelay} мин` : "---"}
 				</div>
 				<div>
 					<Switch checked={isActive} onCheckedChange={handleSwitchChange} />

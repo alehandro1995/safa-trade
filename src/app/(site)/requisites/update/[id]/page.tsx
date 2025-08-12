@@ -1,5 +1,5 @@
 import { prisma } from "@/client";
-import CreateRequisite from "@/components/requisites/RequisitesForm";
+import RequisitesForm from "@/components/requisites/RequisitesForm";
 import { cookies } from 'next/headers';
 import { SlashIcon } from "lucide-react"
 
@@ -53,8 +53,6 @@ async function Page({params}: {params: Promise<{id: string}>}) {
 			cardNumber: true,
 			cardOwner: true,
 			card: true,
-			groupId: true,
-			deviceId: true,
 			minOrder: true,
 			maxOrder: true,
 			dayLimit: true,
@@ -72,8 +70,6 @@ async function Page({params}: {params: Promise<{id: string}>}) {
 	const requisite = rawRequisite
 		? {
 			...rawRequisite,
-			groupId: rawRequisite.groupId === null ? undefined : rawRequisite.groupId,
-			deviceId: rawRequisite.deviceId === null ? undefined : rawRequisite.deviceId,
 			minOrder: rawRequisite.minOrder === null ? undefined : rawRequisite.minOrder,
 			maxOrder: rawRequisite.maxOrder === null ? undefined : rawRequisite.maxOrder,
 			dayLimit: rawRequisite.dayLimit === null ? undefined : rawRequisite.dayLimit,
@@ -106,7 +102,7 @@ async function Page({params}: {params: Promise<{id: string}>}) {
 					</BreadcrumbItem>
 				</BreadcrumbList>
 			</Breadcrumb>
-			<CreateRequisite 
+			<RequisitesForm 
 				currencies={currencies} 
 				banks={banks} 
 				paymentMethod={paymentMethod} 

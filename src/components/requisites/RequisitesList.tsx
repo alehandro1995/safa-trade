@@ -21,15 +21,15 @@ function RequisitesList() {
 	return ( 
 		<div className="w-full flex flex-col">
 			<div className="grid grid-cols-12 items-end border-b-[1px] border-border p-4 font-semibold">
-				<div>Устройство</div>
-				<div className="col-span-2">Реквизиты</div>
-				<div>Группа</div>
+				<div className="col-span-3">Реквизиты</div>
 				<div>Валюта</div>
 				<div className="col-span-2">Лимиты по суммам</div>
 				<div>По объему</div>
-				<div>По кол.</div>
-				<div>Одноврем.</div>
+				<div>По кол</div>
+				<div>Одноврем</div>
+				<div>Задержка</div>
 				<div>Статус</div>
+				<div></div>
 			</div>
 			{requisites.length > 0 
 				? 

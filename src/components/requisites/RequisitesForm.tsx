@@ -95,8 +95,6 @@ AddRequisitesProps) {
 			cardNumber: '',
 			cardOwner: '',
 			card: '',
-			groupId: undefined,
-			deviceId: undefined,	
 			minOrder: undefined,
 			maxOrder: undefined,
 			dayLimit: undefined,
@@ -312,66 +310,6 @@ AddRequisitesProps) {
 								<FormMessage />
 							</FormItem>
 						)}
-					/>	
-        
-					<FormField
-						control={form.control}
-						name="groupId"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Группа</FormLabel>
-								<Select 
-									value={field.value?.toString()}
-									onValueChange={(val) => field.onChange(Number(val))}>
-									<FormControl>
-										<SelectTrigger className="w-full">
-											<SelectValue />
-										</SelectTrigger>
-									</FormControl>
-									<SelectContent>
-										<SelectGroup>
-											<SelectLabel>Группы</SelectLabel>
-											{groups.map((group) => (
-												<SelectItem key={group.id} value={group.id.toString()}>
-													{group.name}
-												</SelectItem>
-											))}
-										</SelectGroup>
-									</SelectContent>
-								</Select>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-          
-					<FormField
-						control={form.control}
-						name="deviceId"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Устройство</FormLabel>
-								<Select 
-									value={field.value?.toString()}
-									onValueChange={(val) => field.onChange(Number(val))}>
-									<FormControl>
-										<SelectTrigger className="w-full">
-											<SelectValue />
-										</SelectTrigger>
-									</FormControl>
-									<SelectContent>
-										<SelectGroup>
-											<SelectLabel>Устройства</SelectLabel>
-											{devices.map((device) => (
-												<SelectItem key={device.id} value={device.id.toString()}>
-													{device.name}
-												</SelectItem>
-											))}
-										</SelectGroup>
-									</SelectContent>
-								</Select>
-								<FormMessage />
-							</FormItem>
-						)}
 					/>
 					
           <h4 className="col-span-2 text-center text-lg my-2">Лимиты</h4>
@@ -521,7 +459,7 @@ AddRequisitesProps) {
 					/>	
         </CardContent> 
 				<CardFooter className="w-full flex justify-end gap-x-6 mt-4">
-					<Button variant="outline" type="reset">Сбросить</Button>
+					<Button variant="outline" type="button" onClick={() => router.push('/requisites')}>Назад</Button>
 					<Button type="submit" disabled={pending}>{type === 'create' ? 'Сохранить' : 'Изменить'}</Button>
 				</CardFooter>
       </form>

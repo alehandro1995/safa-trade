@@ -46,16 +46,10 @@ export async function getRequisites(data: IRequisitesFilter): Promise<IRequisite
 		whereFilter.status = data.status === 1 ? true : false;
 	}
 
-	if (data.groupId) {
-		whereFilter.groupId = data.groupId;
-	}
-
 	console.log('Where filter:', whereFilter);
 	const requisites = await prisma.requisites.findMany({
 		where: whereFilter,
 		include: {
-			device: true,
-			group: true,
 			currency: true,
 			bankName: true,
 			paymentMethod: true

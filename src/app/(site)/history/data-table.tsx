@@ -58,6 +58,7 @@ export function DataTable<TData, TValue>({
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+	const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
 
   const table = useReactTable({
 	data,
@@ -66,11 +67,18 @@ export function DataTable<TData, TValue>({
 		getPaginationRowModel: getPaginationRowModel(),
 		onSortingChange: setSorting,
 		getSortedRowModel: getSortedRowModel(),
-		onColumnFiltersChange: setColumnFilters,
 		getFilteredRowModel: getFilteredRowModel(),
+		onColumnFiltersChange: (updater) => {
+			setColumnFilters(updater);
+			// сброс страницы на первую при изменении фильтров
+			setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+		},
+		onPaginationChange: setPagination,
+		autoResetPageIndex: false,
 		state: {
 	  	sorting,
 	  	columnFilters,
+			pagination,
 		}
   });
 

@@ -43,8 +43,7 @@ const requisitesSchema = z.object({
   currencyId: z.number().optional(),
 	bankId: z.number().optional(),
   paymentId: z.number().optional(),
-	status: z.number().optional(),
-  groupId: z.number().optional(),
+	status: z.number().optional()
 });
 
 function RequisitesFilter(
@@ -58,7 +57,6 @@ function RequisitesFilter(
 			bankId: undefined,
 			paymentId: undefined,
 			status: undefined,
-			groupId: undefined,
 		}
 	});
 
@@ -72,8 +70,7 @@ function RequisitesFilter(
 			currencyId: undefined,
 			bankId: undefined,
 			paymentId: undefined,
-			status: undefined,
-			groupId: undefined,
+			status: undefined
 		};
 		getRequisites(values)
 			.then((data:IRequisites[]) => {
@@ -94,8 +91,7 @@ function RequisitesFilter(
 			currencyId: undefined,
 			bankId: undefined,
 			paymentId: undefined,
-			status: undefined,
-			groupId: undefined,
+			status: undefined
 		});
 	};
 
@@ -223,34 +219,6 @@ function RequisitesFilter(
 											<SelectLabel>Статус</SelectLabel>
 												<SelectItem value="1">Активен</SelectItem>
 												<SelectItem value="0">Неактивен</SelectItem>
-										</SelectGroup>
-									</SelectContent>
-								</Select>
-							</FormItem>
-						)}
-					/>
-					<FormField
-						control={form.control}
-						name="groupId"
-						render={({ field }) => (
-							<FormItem>
-								<Select 
-									key={field.value ?? 'empty'} 
-									value={field.value?.toString()}
-									onValueChange={(val) => field.onChange(Number(val))}>
-									<FormControl>
-										<SelectTrigger className="w-full">
-											<SelectValue placeholder="Группа" />
-										</SelectTrigger>
-									</FormControl>
-									<SelectContent>
-										<SelectGroup>
-											<SelectLabel>Группы</SelectLabel>
-											{groups.map((group) => (
-												<SelectItem key={group.id} value={group.id.toString()}>
-													{group.name}
-												</SelectItem>
-											))}
 										</SelectGroup>
 									</SelectContent>
 								</Select>
