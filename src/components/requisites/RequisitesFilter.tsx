@@ -36,7 +36,6 @@ type RequisitesFilterProps = {
   currencies: currency[];
   banks: bank_name[];
   paymentMethod: payment_method[];
-  groups: Group[];
 }
 
 const requisitesSchema = z.object({
@@ -47,7 +46,7 @@ const requisitesSchema = z.object({
 });
 
 function RequisitesFilter(
-	{ currencies, banks, paymentMethod, groups }: RequisitesFilterProps) {
+	{ currencies, banks, paymentMethod }: RequisitesFilterProps) {
 	const [pending, setPending] = useState(false);
 	const addRequisite = useRequisitesStore((state) => state.addRequisite);
 	const form = useForm<z.infer<typeof requisitesSchema>>({

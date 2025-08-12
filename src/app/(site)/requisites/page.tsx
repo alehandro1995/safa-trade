@@ -35,18 +35,6 @@ export default async function Page() {
 	const banks = await prisma.bank_name.findMany();
 	const paymentMethod = await prisma.payment_method.findMany();
 
-	const groups = await prisma.group.findMany({
-		where: {
-			userId: user.id
-		}
-	});
-
-	const devices = await prisma.device.findMany({
-		where: {
-			userId: user.id
-		}
-	});
- 
   return (
     <section className="p-6 overflow-auto">
 			<Breadcrumb>
@@ -66,7 +54,6 @@ export default async function Page() {
 				currencies={currencies}
 				banks={banks}
 				paymentMethod={paymentMethod}
-				groups={groups}
 			/>
       <Card className="mt-5 p-5 min-w-[1240px]">
 				<Link href="/requisites/create">
