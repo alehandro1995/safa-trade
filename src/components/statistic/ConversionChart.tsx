@@ -1,4 +1,5 @@
 "use client";
+import { useMemo } from "react";
 import {
   Card,
   CardContent,
@@ -11,7 +12,8 @@ import {
 	Area, 
 	AreaChart, 
 	CartesianGrid, 
-	XAxis 
+	XAxis,
+	YAxis
 } from "recharts";
 
 import {
@@ -22,16 +24,6 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-
-const chartData = [
-  { date: "Понедельник", completed: 186, canceled: 80 },
-  { date: "Вторник", completed: 305, canceled: 200 },
-  { date: "Среда", completed: 237, canceled: 120 },
-  { date: "Четверг", completed: 73, canceled: 190 },
-  { date: "Пятница", completed: 209, canceled: 130 },
-  { date: "Суббота", completed: 214, canceled: 140 },
-	{ date: "Воскресенье", completed: 200, canceled: 90 },
-];
 
 const chartConfig = {
   completed: {
@@ -55,13 +47,47 @@ type ConversionChartProps = {
 };
 
 function ConversionChart({data, period}: ConversionChartProps) {
+	const chartData = useMemo(() => {
+		const map = new Map<string, { completed: number; canceled: number }>();
+
+		data.forEach(item => {``
+			const date = new Date(item.updatedAt)
+			const dayLabel = date.toLocaleDateString("ru-RU", {
+				day: "2-digit",
+				month: "2-digit"
+			}).replace(".", ":").replace(".", "");
+
+			if (!map.has(dayLabel)) {
+				map.set(dayLabel, { completed: 0, canceled: 0 });
+			}
+
+			if (item.status === "COMPLETED") {
+				map.get(dayLabel)!.completed++;
+			}
+			if (item.status === "CANCELED") {
+				map.get(dayLabel)!.canceled++;
+			}
+		});
+
+		return Array.from(map.entries())
+			.sort(([a], [b]) => {
+				const [da, ma] = a.split(":").map(Number);
+				const [db, mb] = b.split(":").map(Number);
+				return ma - mb || da - db;
+			})
+			.map(([day, counts]) => ({
+				day,
+				completed: counts.completed,
+				canceled: counts.canceled
+			}));
+	}, [data]);
 
 	return ( 
 		<Card className="col-span-4 p-4">
 			<CardHeader className="flex flex-col gap-2">
 				<CardTitle>Конверсия</CardTitle>
 				<CardDescription className="text-sm text-gray-500">
-					Здесь будет график конверсии
+					Август 2025
 				</CardDescription>
 			</CardHeader>
 			<CardContent className="p-0">
@@ -72,11 +98,15 @@ function ConversionChart({data, period}: ConversionChartProps) {
           >
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey="date"
-              tickLine={false}
-              axisLine={false}
+              dataKey="day"
+              tickLine={true}
+              axisLine={true}
               tickMargin={8}
-              tickFormatter={(value) => value.slice(0, 3)}
+            />
+						<YAxis
+              tickLine={true}
+              axisLine={true}
+              tickMargin={8}
             />
             <ChartTooltip
               cursor={false}

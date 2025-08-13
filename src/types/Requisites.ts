@@ -2,9 +2,7 @@ import type {
 	requisites, 
 	bank_name, 
 	currency, 
-	payment_method, 
-	Group,
-	Device 
+	payment_method,
 } from "@/generated/prisma";
 
 export interface IRequisites extends requisites {

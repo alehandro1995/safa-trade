@@ -16,9 +16,9 @@ import {
 //import { Currency } from "lucide-react"
 
 const chartData = [
-	{ bank: "tgp", amount: 75, fill: "var(--color-tgp)" },
-	{ bank: "spb", amount: 200, fill: "var(--color-spb)" },
-	{ bank: "card", amount: 387, fill: "var(--color-card)" },
+	{ bank: "tgp", amount: 540, fill: "var(--color-tgp)" },
+	{ bank: "spb", amount: 309, fill: "var(--color-spb)" },
+	{ bank: "card", amount: 695, fill: "var(--color-card)" },
 ]
 const chartConfig = {
 	amount: {
@@ -43,8 +43,8 @@ function PaymentMethodPie() {
 	return (
 		<Card className="col-span-2 flex flex-col">
 			<CardHeader className="items-center pb-0">
-				<CardTitle>Соотношение банков</CardTitle>
-				<CardDescription>Январь - Июнь 2024</CardDescription>
+				<CardTitle>Способы оплаты</CardTitle>
+				<CardDescription>Август 2025</CardDescription>
 			</CardHeader>
 			<CardContent className="flex-1 p-0">
 				<ChartContainer

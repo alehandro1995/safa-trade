@@ -16,9 +16,9 @@ import {
 //import { Currency } from "lucide-react"
 
 const chartData = [
-  { currency: "rub", amount: 817, fill: "var(--color-rub)" },
-  { currency: "tjs", amount: 173, fill: "var(--color-tjs)" },
-	{ currency: "amd", amount: 50, fill: "var(--color-amd)" }
+  { currency: "rub", amount: 1003, fill: "var(--color-rub)" },
+  { currency: "tjs", amount: 463, fill: "var(--color-tjs)" },
+	{ currency: "amd", amount: 78, fill: "var(--color-amd)" }
 ]
 const chartConfig = {
   amount: {
@@ -44,7 +44,7 @@ function CurrencyPie() {
     <Card className="col-span-2 flex flex-col">
       <CardHeader className="items-center pb-0">
         <CardTitle>Соотношение валют</CardTitle>
-        <CardDescription>Январь - Июнь 2024</CardDescription>
+        <CardDescription>Август 2025</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 p-0">
         <ChartContainer

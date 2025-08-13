@@ -16,11 +16,11 @@ import {
 //import { Currency } from "lucide-react"
 
 const chartData = [
-	{ bank: "vasl", amount: 400, fill: "var(--color-vasl)" },
-	{ bank: "dcbank", amount: 350, fill: "var(--color-dcbank)" },
-	{ bank: "alif", amount: 300, fill: "var(--color-alif)" },
-	{ bank: "eschata", amount: 280, fill: "var(--color-eschata)" },
-	{ bank: "another", amount: 500, fill: "var(--color-another)" },
+	{ bank: "vasl", amount: 308, fill: "var(--color-vasl)" },
+	{ bank: "dcbank", amount: 277, fill: "var(--color-dcbank)" },
+	{ bank: "alif", amount: 247, fill: "var(--color-alif)" },
+	{ bank: "eschata", amount: 185, fill: "var(--color-eschata)" },
+	{ bank: "another", amount: 527, fill: "var(--color-another)" },
 ]
 const chartConfig = {
 	amount: {
@@ -54,7 +54,7 @@ function BanksPie() {
 		<Card className="col-span-2 flex flex-col">
 			<CardHeader className="items-center pb-0">
 				<CardTitle>Соотношение банков</CardTitle>
-				<CardDescription>Январь - Июнь 2024</CardDescription>
+				<CardDescription>Август 2025</CardDescription>
 			</CardHeader>
 			<CardContent className="flex-1 p-0">
 				<ChartContainer

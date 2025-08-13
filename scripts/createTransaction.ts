@@ -1,6 +1,6 @@
 import { prisma } from '@/client'
 
-const EMAIL = 'test@mail.ru';
+const EMAIL = 'test2@mail.ru';
 const AMOUNT = 5600; 
 const CURRENCY = 'RUB';
 const CURRENT_RATE = 89.24
