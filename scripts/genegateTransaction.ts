@@ -4,17 +4,21 @@ import { TransactionInitiator, TransactionStatus } from '@/generated/prisma';
 
 // === Настраиваемые параметры ===
 const EMAIL = 'test2@mail.ru';
-const CURRENCY = 'RUB';
-const CURRENT_RATE = 79.38
+//const CURRENCY = 'RUB';
+//const CURRENT_RATE = 80.78;
 //const CURRENCY = 'TJS';
 //const CURRENT_RATE = 9.36;
-const startDate = new Date(2025, 7, 12, 0, 0, 0);
-const transactionCount = 160;                      
-const minAmount = 3000; 
+//const CURRENCY = 'AMD';
+//const CURRENT_RATE = 382;
+const CURRENCY = 'GEL';
+const CURRENT_RATE = 2.73;
+const startDate = new Date(2025, 8, 22, 0, 0, 0);
+const transactionCount = 24;                      
+const minAmount = 200;
 
 async function main() {
   let currentDate = startDate;
-  let currentNum = 35000; // первый номер транзакции
+  let currentNum = 50500; // первый номер транзакции
 	const user = await prisma.user.findUnique({
 		where: { 
 			email: EMAIL,
@@ -30,7 +34,7 @@ async function main() {
 		let increment = Math.floor(Math.random() * 20) + 2;
 		currentNum += increment; // увеличиваем номер транзакции на случайное число от 2 до 20
     // Генерация случайной суммы с двумя десятичными знаками
-    const randomValue = Math.ceil(Math.random() * 100) * 100;
+    const randomValue = Math.ceil(Math.random() * 100) * 10;
 		let amount = randomValue < minAmount ? randomValue * 10 : randomValue;
 		if (amount < minAmount) {
 			console.warn(`Generated amount ${amount} is less than minimum ${minAmount}. With ${randomValue}`);
@@ -73,7 +77,7 @@ async function main() {
 			return;
 		}
 
-		const transactionStatus = i % 5 === 0 ? 'CANCELED' : 'COMPLETED' as TransactionStatus;
+		const transactionStatus = i % 3 === 0 ? 'CANCELED' : 'COMPLETED' as TransactionStatus;
 		const initiator = transactionStatus === 'CANCELED' ? 'SYSTEM' : 'TREADER' as TransactionInitiator;
 		try {
 			await prisma.transaction.create({

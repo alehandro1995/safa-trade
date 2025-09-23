@@ -99,19 +99,21 @@ model currency {
 }
 
 model bank_name {
-	id					Int       @id @default(autoincrement())
-	name        String    @unique(map: "Bank_name_key")
+	id					Int       	@id @default(autoincrement())
+	uuid        String      @unique @default(dbgenerated("gen_random_uuid()::text"))
+	name        String    	@unique(map: "Bank_name_key")
 	icon				String?
-	createdAt   DateTime  @default(now())
-	requisites    requisites[]
+	createdAt   DateTime  	@default(now())
+	requisites  requisites[]
 }
 
 model payment_method {
-	id					Int       @id @default(autoincrement())
-	name        String    @unique(map: "Payment_method_name_key")
+	id					Int      		@id @default(autoincrement())
+	uuid        String      @unique @default(dbgenerated("gen_random_uuid()::text"))
+	name        String    	@unique(map: "Payment_method_name_key")
 	icon				String?
-	createdAt   DateTime  @default(now())
-	requisites    requisites[]
+	createdAt   DateTime  	@default(now())
+	requisites  requisites[]
 }
 
 enum user_role {

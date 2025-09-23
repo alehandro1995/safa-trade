@@ -37,6 +37,7 @@ const setConversionRate = (total: number, data: StatisticTransaction[]) => {
 
 	return completeDeals === 0 ? 0 : total / completeDeals;
 }
+
 function MainInfo({transactions}: {transactions: StatisticTransaction[]}) {
 	let totalTurnover = getTotal(transactions);
 	let totalIncome = getTotalFees(transactions);
